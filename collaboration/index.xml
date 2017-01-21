@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Collaborations on AHRS for Stratux</title>
+    <link>https://westphae.github.io/stratux/collaboration/index.xml</link>
+    <description>Recent content in Collaborations on AHRS for Stratux</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>MIT license</copyright>
+    <lastBuildDate>Sat, 21 Jan 2017 14:38:08 -0500</lastBuildDate>
+    <atom:link href="https://westphae.github.io/stratux/collaboration/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Collaboration</title>
+      <link>https://westphae.github.io/stratux/collaboration/</link>
+      <pubDate>Sat, 21 Jan 2017 14:38:08 -0500</pubDate>
+      
+      <guid>https://westphae.github.io/stratux/collaboration/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;https://westphae.github.io/stratux/img/contact-bg.jpg&#34; alt=&#34;splash&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;issues&#34;&gt;Issues&lt;/h2&gt;
+
+&lt;p&gt;Submit any issues on my fork&amp;rsquo;s &lt;a href=&#34;https://github.com/westphae/stratux/issues&#34;&gt;issues&lt;/a&gt; area.
+Every flight creates a file in /var/log/sensors_YYYYMMDD_HHMMSS.csv, which you can upload.
+It might also be helpful to upload /var/log/stratux.log in certain situations.&lt;/p&gt;
+
+&lt;h2 id=&#34;feedback&#34;&gt;Feedback&lt;/h2&gt;
+
+&lt;p&gt;Please contact me on &lt;a href=&#34;https://stratuxadsb.slack.com/team/bonanzaeric&#34;&gt;Slack&lt;/a&gt;, either with a direct message
+or in the &lt;a href=&#34;https://stratuxadsb.slack.com/messages/ahrs/&#34;&gt;ahrs&lt;/a&gt; channel.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re not on Slack, you can use one of the links at left.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

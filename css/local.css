@@ -1,0 +1,14 @@
+table, th, td {
+	border: 1px solid black;
+}
+
+img {
+	width: 400px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+img[alt=splash] {
+	width: 100%;
+}

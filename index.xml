@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AHRS for Stratux</title>
+    <link>https://westphae.github.io/stratux/index.xml</link>
+    <description>Recent content on AHRS for Stratux</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>MIT license</copyright>
+    <lastBuildDate>Sat, 21 Jan 2017 14:38:08 -0500</lastBuildDate>
+    <atom:link href="https://westphae.github.io/stratux/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Collaboration</title>
+      <link>https://westphae.github.io/stratux/collaboration/</link>
+      <pubDate>Sat, 21 Jan 2017 14:38:08 -0500</pubDate>
+      
+      <guid>https://westphae.github.io/stratux/collaboration/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;https://westphae.github.io/stratux/img/contact-bg.jpg&#34; alt=&#34;splash&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;issues&#34;&gt;Issues&lt;/h2&gt;
+
+&lt;p&gt;Submit any issues on my fork&amp;rsquo;s &lt;a href=&#34;https://github.com/westphae/stratux/issues&#34;&gt;issues&lt;/a&gt; area.
+Every flight creates a file in /var/log/sensors_YYYYMMDD_HHMMSS.csv, which you can upload.
+It might also be helpful to upload /var/log/stratux.log in certain situations.&lt;/p&gt;
+
+&lt;h2 id=&#34;feedback&#34;&gt;Feedback&lt;/h2&gt;
+
+&lt;p&gt;Please contact me on &lt;a href=&#34;https://stratuxadsb.slack.com/team/bonanzaeric&#34;&gt;Slack&lt;/a&gt;, either with a direct message
+or in the &lt;a href=&#34;https://stratuxadsb.slack.com/messages/ahrs/&#34;&gt;ahrs&lt;/a&gt; channel.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re not on Slack, you can use one of the links at left.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Stratux AHRS image for beta testers</title>
+      <link>https://westphae.github.io/stratux/howto/</link>
+      <pubDate>Thu, 19 Jan 2017 14:41:29 -0500</pubDate>
+      
+      <guid>https://westphae.github.io/stratux/howto/</guid>
+      <description>
+
+&lt;p&gt;I am excited to finally offer a Stratux image for anyone who would like to help beta test my initial AHRS solution!&lt;/p&gt;
+
+&lt;h2 id=&#34;requirements&#34;&gt;Requirements&lt;/h2&gt;
+
+&lt;p&gt;To use this image, in addition to the normal Stratux requriements, you&amp;rsquo;ll need to connect an MPU-9250 sensor to your Stratux.
+The OpenFlightSolutions AHRS board is a great choice.
+You can also use a RY836AI (tested), a SparkFun MPU-9250 breakout board (tested), or your own home brew.&lt;/p&gt;
+
+&lt;p&gt;The code also has a driver for the BMP280, which also exists on both the OpenFlightSolutions AHRS board and the RY836AI.
+If you have one of these boards or a separate dev board, the pressure altitude and rate of climb will be used in the algorithm.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My Plan for AHRS Development</title>
+      <link>https://westphae.github.io/stratux/plan/</link>
+      <pubDate>Wed, 18 Jan 2017 16:40:25 -0500</pubDate>
+      
+      <guid>https://westphae.github.io/stratux/plan/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve been working on AHRS for about 9 months now.
+My original approach was to use an Extended Kalman Filter.
+This proved to be a bit more difficult than I&amp;rsquo;d expected!&lt;/p&gt;
+
+&lt;p&gt;In order to get something working and build a framework to integrate it into the Stratux code, I instead took an approach I call the &amp;ldquo;SimpleAHRS&amp;rdquo; algorithm.
+Like @AvSquirrel&amp;rsquo;s &amp;ldquo;GPS-only&amp;rdquo; approach, its foundation is an attitude estimate based on GPS.
+Then the sensors are used to &amp;ldquo;tweak&amp;rdquo; the calculated attitude.
+This allows it to respond to changes in attitude in realtime and to account somewhat for uncoordinated maneuvers.
+However, it does still have a few deficiencies.
+Mainly, it cannot get pitch quite right.
+Also, uncoordinated maneuvers that persist for more than a few seconds will begin to display incorrectly.&lt;/p&gt;
+
+&lt;p&gt;A true AHRS system should be based on a Kalman filter (or derivative) fusion of sensors:
+* Gyros
+* Accelerations
+* Magnetometer
+* GPS&lt;/p&gt;
+
+&lt;p&gt;Even better is ADAHARS: Air Data And Heading Reference System.  This would also incorporate:
+* Airspeed
+* Barometer&lt;/p&gt;
+
+&lt;p&gt;The current approach uses GPS, gyro and barometer.
+The next iteration will use GPS, gyro, accelerometer, barometer, and possibly magnetometer.&lt;/p&gt;
+
+&lt;p&gt;Mathematical details of the algorithms, simulations, etc. are or will be available in the documentation for &lt;a href=&#34;https://github.com/westphae/goflying&#34;&gt;https://github.com/westphae/goflying&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>AHRS for Stratux</title>
+      <link>https://westphae.github.io/stratux/</link>
+      <pubDate>Wed, 18 Jan 2017 22:36:35 +0000</pubDate>
+      
+      <guid>https://westphae.github.io/stratux/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://westphae.github.io/stratux/img/intro-bg.jpg&#34; alt=&#34;splash&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This project is a &lt;a href=&#34;https://github.com/westphae/stratux&#34;&gt;fork&lt;/a&gt; of the &lt;a href=&#34;https://github.com/cyoung/stratux&#34;&gt;Stratux&lt;/a&gt; project.
+It is mainly intended to provide AHRS (Attitude Heading and Reference System) features.&lt;/p&gt;
+
+&lt;p&gt;I created this site to help beta testers to download, install, and use this fork,
+and to provide me feedback and/or collaborate on its further development.&lt;/p&gt;
+
+&lt;p&gt;AHRS support requires writing drivers for sensor hardware, Kalman filter and other approaches
+for determining attitude from sensor input, and software simulators for testing these algorithms.
+The main code for AHRS is in a separate GitHub repository of mine, &lt;a href=&#34;https://github.com/westphae/goflying&#34;&gt;https://github.com/westphae/goflying&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This fork incorporates minimal changes into the stratux code to integrate the AHRS code from the goflying library.
+Hopefully it will eventually be merged into the main stratux project.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

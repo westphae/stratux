@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Howtos on AHRS for Stratux</title>
+    <link>https://westphae.github.io/stratux/howto/index.xml</link>
+    <description>Recent content in Howtos on AHRS for Stratux</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>MIT license</copyright>
+    <lastBuildDate>Thu, 19 Jan 2017 14:41:29 -0500</lastBuildDate>
+    <atom:link href="https://westphae.github.io/stratux/howto/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A Stratux AHRS image for beta testers</title>
+      <link>https://westphae.github.io/stratux/howto/</link>
+      <pubDate>Thu, 19 Jan 2017 14:41:29 -0500</pubDate>
+      
+      <guid>https://westphae.github.io/stratux/howto/</guid>
+      <description>
+
+&lt;p&gt;I am excited to finally offer a Stratux image for anyone who would like to help beta test my initial AHRS solution!&lt;/p&gt;
+
+&lt;h2 id=&#34;requirements&#34;&gt;Requirements&lt;/h2&gt;
+
+&lt;p&gt;To use this image, in addition to the normal Stratux requriements, you&amp;rsquo;ll need to connect an MPU-9250 sensor to your Stratux.
+The OpenFlightSolutions AHRS board is a great choice.
+You can also use a RY836AI (tested), a SparkFun MPU-9250 breakout board (tested), or your own home brew.&lt;/p&gt;
+
+&lt;p&gt;The code also has a driver for the BMP280, which also exists on both the OpenFlightSolutions AHRS board and the RY836AI.
+If you have one of these boards or a separate dev board, the pressure altitude and rate of climb will be used in the algorithm.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

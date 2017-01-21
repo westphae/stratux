@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Plans on AHRS for Stratux</title>
+    <link>https://westphae.github.io/stratux/plan/index.xml</link>
+    <description>Recent content in Plans on AHRS for Stratux</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>MIT license</copyright>
+    <lastBuildDate>Wed, 18 Jan 2017 16:40:25 -0500</lastBuildDate>
+    <atom:link href="https://westphae.github.io/stratux/plan/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My Plan for AHRS Development</title>
+      <link>https://westphae.github.io/stratux/plan/</link>
+      <pubDate>Wed, 18 Jan 2017 16:40:25 -0500</pubDate>
+      
+      <guid>https://westphae.github.io/stratux/plan/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve been working on AHRS for about 9 months now.
+My original approach was to use an Extended Kalman Filter.
+This proved to be a bit more difficult than I&amp;rsquo;d expected!&lt;/p&gt;
+
+&lt;p&gt;In order to get something working and build a framework to integrate it into the Stratux code, I instead took an approach I call the &amp;ldquo;SimpleAHRS&amp;rdquo; algorithm.
+Like @AvSquirrel&amp;rsquo;s &amp;ldquo;GPS-only&amp;rdquo; approach, its foundation is an attitude estimate based on GPS.
+Then the sensors are used to &amp;ldquo;tweak&amp;rdquo; the calculated attitude.
+This allows it to respond to changes in attitude in realtime and to account somewhat for uncoordinated maneuvers.
+However, it does still have a few deficiencies.
+Mainly, it cannot get pitch quite right.
+Also, uncoordinated maneuvers that persist for more than a few seconds will begin to display incorrectly.&lt;/p&gt;
+
+&lt;p&gt;A true AHRS system should be based on a Kalman filter (or derivative) fusion of sensors:
+* Gyros
+* Accelerations
+* Magnetometer
+* GPS&lt;/p&gt;
+
+&lt;p&gt;Even better is ADAHARS: Air Data And Heading Reference System.  This would also incorporate:
+* Airspeed
+* Barometer&lt;/p&gt;
+
+&lt;p&gt;The current approach uses GPS, gyro and barometer.
+The next iteration will use GPS, gyro, accelerometer, barometer, and possibly magnetometer.&lt;/p&gt;
+
+&lt;p&gt;Mathematical details of the algorithms, simulations, etc. are or will be available in the documentation for &lt;a href=&#34;https://github.com/westphae/goflying&#34;&gt;https://github.com/westphae/goflying&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
