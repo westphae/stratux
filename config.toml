@@ -17,8 +17,8 @@ theme = "hugo-material-docs"
     repo_url = "https://github.com/westphae/stratux"
 
     version = "1.0.0"
-    #logo = ""
-    #favicon = ""
+    logo = "/img/AHRS_Screenshot.png"
+    favicon = "/img/favicon.png"
 
     permalink = "#"
 

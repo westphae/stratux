@@ -18,16 +18,18 @@ Mainly, it cannot get pitch quite right.
 Also, uncoordinated maneuvers that persist for more than a few seconds will begin to display incorrectly.
 
 A true AHRS system should be based on a Kalman filter (or derivative) fusion of sensors:
+
 * Gyros
 * Accelerations
 * Magnetometer
 * GPS
 
 Even better is ADAHARS: Air Data And Heading Reference System.  This would also incorporate:
+
 * Airspeed
 * Barometer
 
-The current approach uses GPS, gyro and barometer.
-The next iteration will use GPS, gyro, accelerometer, barometer, and possibly magnetometer.
+The current "SimpleAHRS" approach uses GPS, gyro and barometer.
+The next iteration will use GPS, gyro, accelerometer, barometer, and possibly magnetometer, in an Extended Kalman Filter.
 
-Mathematical details of the algorithms, simulations, etc. are or will be available in the documentation for https://github.com/westphae/goflying.
+Mathematical details of the algorithms, simulations, etc. are or will be available in the documentation for https://github.com/westphae/goflying at https://westphae.github.io/goflying.
