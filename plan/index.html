@@ -22,13 +22,13 @@
 
     <meta property="og:url" content="https://westphae.github.io/stratux/plan/">
     <meta property="og:title" content="AHRS for Stratux">
-    
+    <meta property="og:image" content="https://westphae.github.io/img/AHRS_Screenshot.png">
     <meta name="apple-mobile-web-app-title" content="AHRS for Stratux">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="shortcut icon" type="image/x-icon" href="https://westphae.github.io/stratux/images/favicon.ico">
-    <link rel="icon" type="image/x-icon" href="https://westphae.github.io/stratux/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="https://westphae.github.io/img/favicon.png">
+    <link rel="icon" type="image/x-icon" href="https://westphae.github.io/img/favicon.png">
 
     <style>
       @font-face {
@@ -138,6 +138,10 @@
 		<nav aria-label="Navigation">
   <a href="https://github.com/westphae/stratux" class="project">
     <div class="banner">
+      
+        <div class="logo">
+          <img src="https://westphae.github.io/stratux/img/AHRS_Screenshot.png">
+        </div>
       
       <div class="name">
         <strong>AHRS for Stratux <span class="version">1.0.0</span></strong>
@@ -306,20 +310,26 @@ However, it does still have a few deficiencies.
 Mainly, it cannot get pitch quite right.
 Also, uncoordinated maneuvers that persist for more than a few seconds will begin to display incorrectly.</p>
 
-<p>A true AHRS system should be based on a Kalman filter (or derivative) fusion of sensors:
-* Gyros
-* Accelerations
-* Magnetometer
-* GPS</p>
+<p>A true AHRS system should be based on a Kalman filter (or derivative) fusion of sensors:</p>
 
-<p>Even better is ADAHARS: Air Data And Heading Reference System.  This would also incorporate:
-* Airspeed
-* Barometer</p>
+<ul>
+<li>Gyros</li>
+<li>Accelerations</li>
+<li>Magnetometer</li>
+<li>GPS</li>
+</ul>
 
-<p>The current approach uses GPS, gyro and barometer.
-The next iteration will use GPS, gyro, accelerometer, barometer, and possibly magnetometer.</p>
+<p>Even better is ADAHARS: Air Data And Heading Reference System.  This would also incorporate:</p>
 
-<p>Mathematical details of the algorithms, simulations, etc. are or will be available in the documentation for <a href="https://github.com/westphae/goflying">https://github.com/westphae/goflying</a>.</p>
+<ul>
+<li>Airspeed</li>
+<li>Barometer</li>
+</ul>
+
+<p>The current &ldquo;SimpleAHRS&rdquo; approach uses GPS, gyro and barometer.
+The next iteration will use GPS, gyro, accelerometer, barometer, and possibly magnetometer, in an Extended Kalman Filter.</p>
+
+<p>Mathematical details of the algorithms, simulations, etc. are or will be available in the documentation for <a href="https://github.com/westphae/goflying">https://github.com/westphae/goflying</a> at <a href="https://westphae.github.io/goflying">https://westphae.github.io/goflying</a>.</p>
 
 
 			<aside class="copyright" role="note">

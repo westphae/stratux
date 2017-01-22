@@ -28,20 +28,26 @@ However, it does still have a few deficiencies.
 Mainly, it cannot get pitch quite right.
 Also, uncoordinated maneuvers that persist for more than a few seconds will begin to display incorrectly.&lt;/p&gt;
 
-&lt;p&gt;A true AHRS system should be based on a Kalman filter (or derivative) fusion of sensors:
-* Gyros
-* Accelerations
-* Magnetometer
-* GPS&lt;/p&gt;
+&lt;p&gt;A true AHRS system should be based on a Kalman filter (or derivative) fusion of sensors:&lt;/p&gt;
 
-&lt;p&gt;Even better is ADAHARS: Air Data And Heading Reference System.  This would also incorporate:
-* Airspeed
-* Barometer&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Gyros&lt;/li&gt;
+&lt;li&gt;Accelerations&lt;/li&gt;
+&lt;li&gt;Magnetometer&lt;/li&gt;
+&lt;li&gt;GPS&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;The current approach uses GPS, gyro and barometer.
-The next iteration will use GPS, gyro, accelerometer, barometer, and possibly magnetometer.&lt;/p&gt;
+&lt;p&gt;Even better is ADAHARS: Air Data And Heading Reference System.  This would also incorporate:&lt;/p&gt;
 
-&lt;p&gt;Mathematical details of the algorithms, simulations, etc. are or will be available in the documentation for &lt;a href=&#34;https://github.com/westphae/goflying&#34;&gt;https://github.com/westphae/goflying&lt;/a&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Airspeed&lt;/li&gt;
+&lt;li&gt;Barometer&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The current &amp;ldquo;SimpleAHRS&amp;rdquo; approach uses GPS, gyro and barometer.
+The next iteration will use GPS, gyro, accelerometer, barometer, and possibly magnetometer, in an Extended Kalman Filter.&lt;/p&gt;
+
+&lt;p&gt;Mathematical details of the algorithms, simulations, etc. are or will be available in the documentation for &lt;a href=&#34;https://github.com/westphae/goflying&#34;&gt;https://github.com/westphae/goflying&lt;/a&gt; at &lt;a href=&#34;https://westphae.github.io/goflying&#34;&gt;https://westphae.github.io/goflying&lt;/a&gt;.&lt;/p&gt;
 </description>
     </item>
     

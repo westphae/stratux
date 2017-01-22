@@ -183,6 +183,26 @@ Most notably, its attitude lags the aircraft&amp;rsquo;s actual attitude by a se
 &lt;p&gt;I retained this excellent code for users who do not have attitude sensors, which presumably will be the majority.
 My fork will use the GPS-only attitude if there is no sensor present, or if the &amp;ldquo;Sensors&amp;rdquo; switch in the Hardware section of the Settings page is &amp;ldquo;off.&amp;rdquo;
 Otherwise, it uses my AHRS calculations.&lt;/p&gt;
+
+&lt;h2 id=&#34;disclaimer&#34;&gt;Disclaimer&lt;/h2&gt;
+
+&lt;div class=&#34;admonition warning&#34;&gt;
+&lt;p class=&#34;admonition-title&#34;&gt;This AHRS will not save your life.&lt;/p&gt;
+&lt;p&gt;I was partially motivated to develop this software due to losing my vacuum pump-driven attitude indicator system (including standby pump within an hour each time!) no less than three times over the course of 2700 hours of flying.
+The last time, at night over the Egyptian Saharan desert, I at least had a clear sky above (there was oftentimes not a single light in the desert below).
+My autopilot was also driven by the attitude indicator, so I had to both keep upright and hand-fly through the pitch black for hours.&lt;/p&gt;
+
+&lt;p&gt;Fortunately, this last time I also had a MidCon LifeSaver electrical backup.
+Even surrounded by inky blackness above and below, with no horizon visible outside, between the stars above and the MidCon certified backup, I was able to continue without any loss of situational awareness.
+However, the thought crossed my mind many times as I flew on through the dark for hours that the MidCon was my last and only backup.
+If I had to do an instrument approach, I would be partial panel.
+I would really have loved to have had at least one potential additional and fully independent backup system, if only to provide me some comfort and an independent check for my partial panel flying.&lt;/p&gt;
+
+&lt;p&gt;It goes without saying that a self-built attitude indicator system that can potentially be thrown willy nilly up on the glareshield, in a severely uncontrolled environment, and running software that has never been certified by any independent agent should not be relied upon in any but the most dire of circumstances.
+Even then, you would be very wise to fly partial panel on certified instruments and use any such system as this only as a cross-reference.&lt;/p&gt;
+
+&lt;p&gt;If this software ever serves just to provide some comfort to a pilot in an event such as I experienced, it will have served its purpose.  Its purpose is not to save your life.&lt;/p&gt;
+&lt;/div&gt;
 </description>
     </item>
     

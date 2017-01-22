@@ -32,6 +32,10 @@ It might also be helpful to upload /var/log/stratux.log in certain situations.&l
 or in the &lt;a href=&#34;https://stratuxadsb.slack.com/messages/ahrs/&#34;&gt;ahrs&lt;/a&gt; channel.&lt;/p&gt;
 
 &lt;p&gt;If you&amp;rsquo;re not on Slack, you can use one of the links at left.&lt;/p&gt;
+
+&lt;h2 id=&#34;acknowledgments&#34;&gt;Acknowledgments&lt;/h2&gt;
+
+&lt;p&gt;I would like to thank Steve Sokol of &lt;a href=&#34;http://openflightsolutions.com&#34;&gt;http://openflightsolutions.com&lt;/a&gt; for his input, motivation through his AHRS Challenge, and for providing a prototype AHRS board for testing.  His products are also top notch&amp;ndash;highly recommended!&lt;/p&gt;
 </description>
     </item>
     
