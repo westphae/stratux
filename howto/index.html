@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+  
+  
+  
+  
+   <html class="no-js"> 
+
+  <head lang="en-us">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title>A Stratux AHRS image for beta testers - AHRS for Stratux</title>
+    <meta name="generator" content="Hugo 0.19-DEV" />
+
+    
+    <meta name="description" content="stratux with AHRS">
+    
+    <link rel="canonical" href="https://westphae.github.io/stratux/howto/">
+    
+    <meta name="author" content="Eric Westphal">
+    
+
+    <meta property="og:url" content="https://westphae.github.io/stratux/howto/">
+    <meta property="og:title" content="AHRS for Stratux">
+    
+    <meta name="apple-mobile-web-app-title" content="AHRS for Stratux">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://westphae.github.io/stratux/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://westphae.github.io/stratux/images/favicon.ico">
+
+    <style>
+      @font-face {
+        font-family: 'Icon';
+        src: url('https://westphae.github.io/stratux/fonts/icon.eot');
+        src: url('https://westphae.github.io/stratux/fonts/icon.eot')
+               format('embedded-opentype'),
+             url('https://westphae.github.io/stratux/fonts/icon.woff')
+               format('woff'),
+             url('https://westphae.github.io/stratux/fonts/icon.ttf')
+               format('truetype'),
+             url('https://westphae.github.io/stratux/fonts/icon.svg')
+               format('svg');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://westphae.github.io/stratux/stylesheets/application.css">
+    <link rel="stylesheet" href="https://westphae.github.io/stratux/stylesheets/temporary.css">
+    <link rel="stylesheet" href="https://westphae.github.io/stratux/stylesheets/palettes.css">
+    <link rel="stylesheet" href="https://westphae.github.io/stratux/stylesheets/highlight/highlight.css">
+
+    
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,700|Roboto&#43;Mono">
+    <style>
+      body, input {
+        font-family: 'Roboto', Helvetica, Arial, sans-serif;
+      }
+      pre, code {
+        font-family: 'Roboto Mono', 'Courier New', 'Courier', monospace;
+      }
+    </style>
+
+    
+    <link rel="stylesheet" href="https://westphae.github.io/stratux/css/local.css">
+    
+    <script src="https://westphae.github.io/stratux/javascripts/modernizr.js"></script>
+
+    
+
+  </head>
+  <body class="palette-primary-red palette-accent-teal">
+
+
+
+	
+	
+
+
+<div class="backdrop">
+	<div class="backdrop-paper"></div>
+</div>
+
+<input class="toggle" type="checkbox" id="toggle-drawer">
+<input class="toggle" type="checkbox" id="toggle-search">
+<label class="toggle-button overlay" for="toggle-drawer"></label>
+
+<header class="header">
+	<nav aria-label="Header">
+  <div class="bar default">
+    <div class="button button-menu" role="button" aria-label="Menu">
+      <label class="toggle-button icon icon-menu" for="toggle-drawer">
+        <span></span>
+      </label>
+    </div>
+    <div class="stretch">
+      <div class="title">
+        A Stratux AHRS image for beta testers
+      </div>
+    </div>
+
+    
+    <div class="button button-twitter" role="button" aria-label="Twitter">
+       <a href="https://twitter.com/EWestphal" title="@EWestphal on Twitter" target="_blank" class="toggle-button icon icon-twitter"></a>
+    </div>
+    
+
+    
+    <div class="button button-github" role="button" aria-label="GitHub">
+      <a href="https://github.com/westphae" title="@westphae on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+    </div>
+    
+    
+        
+  </div>
+  <div class="bar search">
+    <div class="button button-close" role="button" aria-label="Close">
+      <label class="toggle-button icon icon-back" for="toggle-search"></label>
+    </div>
+    <div class="stretch">
+      <div class="field">
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+      </div>
+    </div>
+    <div class="button button-reset" role="button" aria-label="Search">
+      <button class="toggle-button icon icon-close" id="reset-search"></button>
+    </div>
+  </div>
+</nav>
+</header>
+
+<main class="main">
+	<div class="drawer">
+		<nav aria-label="Navigation">
+  <a href="https://github.com/westphae/stratux" class="project">
+    <div class="banner">
+      
+      <div class="name">
+        <strong>AHRS for Stratux <span class="version">1.0.0</span></strong>
+        
+          <br>
+          westphae/stratux
+        
+      </div>
+    </div>
+  </a>
+
+  <div class="scrollable">
+    <div class="wrapper">
+      
+        <ul class="repo">
+          <li class="repo-download">
+            <a href="https://github.com/westphae/stratux/archive/master.zip" target="_blank" title="Download" data-action="download">
+              <i class="icon icon-download"></i> Download
+            </a>
+          </li>
+          <li class="repo-stars">
+            <a href="https://github.com/westphae/stratux/stargazers" target="_blank" title="Stargazers" data-action="star">
+              <i class="icon icon-star"></i> Stars
+              <span class="count">&ndash;</span>
+            </a>
+          </li>
+        </ul>
+        <hr>
+      
+
+      <div class="toc">
+        
+        <ul>
+          
+
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="AHRS for Stratux" href="https://westphae.github.io/stratux/">
+	
+	AHRS for Stratux
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a class="current" title="How-To" href="https://westphae.github.io/stratux/howto/">
+	
+	How-To
+</a>
+
+
+<ul id="scrollspy">
+</ul>
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Collaboration" href="https://westphae.github.io/stratux/collaboration/">
+	
+	Collaboration
+</a>
+
+
+
+  
+</li>
+
+
+
+<li>
+  
+    
+
+
+
+<a  title="Plan" href="https://westphae.github.io/stratux/plan/">
+	
+	Plan
+</a>
+
+
+
+  
+</li>
+
+
+        </ul>
+        
+
+        
+        <hr>
+        <span class="section">The author</span>
+        
+        <ul>
+          
+          <li>
+            <a href="https://twitter.com/EWestphal" target="_blank" title="@EWestphal on Twitter">
+              @EWestphal on Twitter
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://github.com/westphae" target="_blank" title="@westphae on GitHub">
+              @westphae on GitHub
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="mailto:eric@androidtestpilot.com" title="Email of eric@androidtestpilot.com">
+              Contact via email
+            </a>
+          </li>
+          
+        </ul>
+        
+      </div>
+    </div>
+  </div>
+</nav>
+
+	</div>
+
+	<article class="article">
+		<div class="wrapper">
+			<h1>A Stratux AHRS image for beta testers </h1>
+
+			
+
+<p>I am excited to finally offer a Stratux image for anyone who would like to help beta test my initial AHRS solution!</p>
+
+<h2 id="requirements">Requirements</h2>
+
+<p>To use this image, in addition to the normal Stratux requriements, you&rsquo;ll need to connect an MPU-9250 sensor to your Stratux.
+The OpenFlightSolutions AHRS board is a great choice.
+You can also use a RY836AI (tested), a SparkFun MPU-9250 breakout board (tested), or your own home brew.</p>
+
+<p>The code also has a driver for the BMP280, which also exists on both the OpenFlightSolutions AHRS board and the RY836AI.
+If you have one of these boards or a separate dev board, the pressure altitude and rate of climb will be used in the algorithm.</p>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>I intended to support the MPU-9150 also (which is the sensor chip on the RY835AI).
+However, the driver for this sensor was removed from the main Stratux code.
+It was pretty ugly anyway&ndash;it was a thin Go wrapper around the original C driver.
+I may write a pure Go driver if there is sufficient interest.
+The MPU-9250 performs better anyway.
+The same is true of the BMP-180 (RY835AI) vs the BMP-280 (RY836AI).</p>
+</div>
+
+<h2 id="download">Download</h2>
+
+<p>You can download the image from the <a href="https://github.com/westphae/stratux/releases">Releases</a> area of the GitHub page.
+Just burn it like any other Stratux image.</p>
+
+<h2 id="sensor-pinout">Sensor Pinout</h2>
+
+<p>Pinouts for the MPU-9250 are as follows:</p>
+
+<table>
+<thead>
+<tr>
+<th>MPU-9250 Pin</th>
+<th>Raspberry Pi Pin</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>VDD</td>
+<td>Pin 02 (or 04)</td>
+</tr>
+
+<tr>
+<td>GND</td>
+<td>Pin 06</td>
+</tr>
+
+<tr>
+<td>FSYNC</td>
+<td>Pin 09</td>
+</tr>
+
+<tr>
+<td>SDA1</td>
+<td>Pin 03</td>
+</tr>
+
+<tr>
+<td>SCL1</td>
+<td>Pin 05</td>
+</tr>
+</tbody>
+</table>
+
+<p>The Raspberry Pi also has ground on pins 14, 20, 25, 30, and 39 that you can connect GND or FSYNC to.</p>
+
+<p>If you use the RY836AI, you can also connect its GPS:</p>
+
+<table>
+<thead>
+<tr>
+<th>GPS Pin</th>
+<th>Raspberry Pi Pin</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>TXD</td>
+<td>Pin 10 (RXD0)</td>
+</tr>
+
+<tr>
+<td>RXD</td>
+<td>Pin 08 (TXD0)</td>
+</tr>
+</tbody>
+</table>
+
+<p><img src="https://westphae.github.io/stratux/img/raspi_pins.png" alt="Raspberry Pi Pins" title="Raspberry Pi Pins" /></p>
+
+<p>Be sure to affix the sensor firmly to the Stratux box.
+The sensor must not be able to move around in flight or the AHRS will give false indications.</p>
+
+<h2 id="changes-to-stratux">Changes to Stratux</h2>
+
+<p>Once you&rsquo;ve connected the board and burned the image to your SDCard, you&rsquo;re ready to go.</p>
+
+<p>There are just a few changes to cyoung/stratux.
+First is a new Attitude Indicator in place of the old &ldquo;paper airplane.&rdquo;
+Tilting the sensor should result in some motion of the AI, though possibly not in a way that makes sense &ndash; because we haven&rsquo;t calibrated it yet.</p>
+
+<p><img src="https://westphae.github.io/stratux/img/AHRS_Screenshot.png" alt="StratuxAI" title="Stratux Horizon Indicator" /></p>
+
+<p>There is also a &ldquo;Calibrate AHRS Sensors&rdquo; button on the &ldquo;Settings&rdquo; page.</p>
+
+<p>I also added a &ldquo;CPU Load&rdquo; area to the &ldquo;Status&rdquo; page.</p>
+
+<h2 id="sensor-orientation">Sensor Orientation</h2>
+
+<p>As noted earlier, it is crucial that the Stratux remain in one position in your aircraft&ndash;if it slides around, it will lose orientation.
+OpenFlightSolutions has a really nice base with a grippy bottom surface for their OpenFlightBox that works great for me.</p>
+
+<p>In this initial release, the Stratux will need to be oriented roughly at &ldquo;right angles&rdquo; to the pitch, yaw and roll axes of the airplane, so give some thought to how it will be situated in your aircraft.
+It can sit in any orientation as long as one of the sensor&rsquo;s X, Y, or Z axes (positive or negative) points forward, one toward the left wing, and one up.
+I put mine on my glareshield with the antennae at the rear&ndash;see the picture.</p>
+
+<p><img src="https://westphae.github.io/stratux/img/stratux_glareshield.jpg" alt="Stratux Placement" title="Stratux placement on the glareshield" /></p>
+
+<p>It will need to be oriented to within say 5° of the airplane&rsquo;s axes to provide good data to the algorithm.
+Eventually I may write a more sophisticated self-calibration routine that will orient itself automatically from any which angle, but for now we need to tell it precisely which direction is which.</p>
+
+<h2 id="sensor-calibration">Sensor Calibration</h2>
+
+<p>Now we will perform a &ldquo;calibration.&rdquo;
+This is not a full sensor calibration, it is just a means to tell the AHRS algorithm the orientation of the Stratux box in the airplane, i.e. which sensor axis corresponds to which aircraft axis.
+It needs to know which end of the sensor will point forward (along the roll axis), which end will point up (along the yaw axis), and which toward the left wing (along the pitch axis).
+This only has to be done once, as long as you don&rsquo;t change this gross orientation of the sensor to your airplane.
+The setting will be stored with your other settings on your SDCard.
+It goes without saying that this is best done on the ground, with the engine off&hellip;</p>
+
+<p>The calibration routine uses gravity to tell the algorithm which way is which.
+On the settings page, if you click on &ldquo;Calibrate AHRS Sensors&rdquo;, it will guide you through this process.
+You will first orient the sensor so that the end that will be pointing forward in flight is instead pointing straight up.
+&ldquo;Straight&rdquo; just means that it is pointing up more than the other two axes, say a pitch angle of 70° or more.</p>
+
+<p><img src="https://westphae.github.io/stratux/img/stratux_orientation_1.jpg" alt="Stratux Forward Orientation" title="Stratux orientation for forward direction" /></p>
+
+<p>Then the axis which feels the most gravity will be considered &ldquo;forward.&rdquo;<br />
+Once you are holding the sensor in this attitude, &ldquo;nose-up,&rdquo; then click the &ldquo;Set Forward Direction&rdquo; button.</p>
+
+<p>Now you just place the sensor in the orientation it will ultimately rest in the airplane.</p>
+
+<p><img src="https://westphae.github.io/stratux/img/stratux_orientation_2.jpg" alt="Stratux Up Orientation" title="Stratux orientation for up direction" /></p>
+
+<p>Then click the &ldquo;Set Up Direction&rdquo; button and gravity will tell the algorithm which direction will be Up.
+From this, we know which direction will be toward the left wing.</p>
+
+<p>You&rsquo;re now ready to fly!</p>
+
+<h2 id="gps-only-attitude">GPS-Only Attitude</h2>
+
+<p>There is already a &ldquo;GPS-only&rdquo; attitude system recently integrated into Stratux.
+This was developed by @AvSquirrel.
+It is considered a &ldquo;pseudo-attitude&rdquo; system because it does not use independent sensors to determine attitude&ndash;it bases its attitude calculations only on GPS data.</p>
+
+<p>It is excellent code and works quite well.
+However, because it doesn&rsquo;t have sensors, it has several deficiencies.
+Most notably, its attitude lags the aircraft&rsquo;s actual attitude by a second or so; and it cannot correctly sense uncoordinated maneuvers.</p>
+
+<p>I retained this excellent code for users who do not have attitude sensors, which presumably will be the majority.
+My fork will use the GPS-only attitude if there is no sensor present, or if the &ldquo;Sensors&rdquo; switch in the Hardware section of the Settings page is &ldquo;off.&rdquo;
+Otherwise, it uses my AHRS calculations.</p>
+
+
+			<aside class="copyright" role="note">
+				
+				&copy; 2017 MIT license &ndash;
+				
+				Documentation built with
+				<a href="https://www.gohugo.io" target="_blank">Hugo</a>
+				using the
+				<a href="http://github.com/digitalcraftsman/hugo-material-docs" target="_blank">Material</a> theme.
+			</aside>
+
+			<footer class="footer">
+				
+
+<nav class="pagination" aria-label="Footer">
+  <div class="previous">
+  
+      <a href="https://westphae.github.io/stratux/collaboration/" title="Collaboration">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              Collaboration
+            </div>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+
+  <div class="next">
+  
+      <a href="https://westphae.github.io/stratux/plan/" title="My Plan for AHRS Development">
+        <span class="direction">
+          Next
+        </span>
+        <div class="page">
+          <div class="stretch">
+            <div class="title">
+              My Plan for AHRS Development
+            </div>
+          </div>
+          <div class="button button-next" role="button" aria-label="Next">
+            <i class="icon icon-forward"></i>
+          </div>
+        </div>
+      </a>
+  
+  </div>
+</nav>
+
+
+
+
+
+			</footer>
+		</div>
+	</article>
+
+	<div class="results" role="status" aria-live="polite">
+		<div class="scrollable">
+			<div class="wrapper">
+				<div class="meta"></div>
+				<div class="list"></div>
+			</div>
+		</div>
+	</div>
+</main>
+
+    <script>
+    
+      var base_url = 'https:\/\/westphae.github.io\/stratux';
+      var repo_id  = 'westphae\/stratux';
+    
+    </script>
+
+    <script src="https://westphae.github.io/stratux/javascripts/application.js"></script>
+    
+
+    <script>
+      /* Add headers to scrollspy */
+      var headers   = document.getElementsByTagName("h2");
+      var scrollspy = document.getElementById('scrollspy');
+
+      if(scrollspy) {
+        if(headers.length > 0) {
+          for(var i = 0; i < headers.length; i++) {
+            var li = document.createElement("li");
+            li.setAttribute("class", "anchor");
+
+            var a  = document.createElement("a");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", headers[i].innerHTML);
+            a.innerHTML = headers[i].innerHTML;
+
+            li.appendChild(a)
+            scrollspy.appendChild(li);
+          }
+        } else {
+          scrollspy.parentElement.removeChild(scrollspy)
+        }
+
+
+        /* Add permanent link next to the headers */
+        var headers = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+        for(var i = 0; i < headers.length; i++) {
+            var a = document.createElement("a");
+            a.setAttribute("class", "headerlink");
+            a.setAttribute("href", "#" + headers[i].id);
+            a.setAttribute("title", "Permanent link")
+            a.innerHTML = "#";
+            headers[i].appendChild(a);
+        }
+      }
+    </script>
+
+    
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+  </body>
+</html>
+
