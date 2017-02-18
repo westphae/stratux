@@ -12,14 +12,14 @@ I am excited to finally offer a Stratux image for anyone who would like to help 
 
 To use this image, in addition to the normal Stratux requriements, you'll need to connect an MPU-9250 sensor to your Stratux.
 The OpenFlightSolutions AHRS board is a great choice.
-You can also use a RY836AI (tested), a SparkFun MPU-9250 breakout board (tested), or your own home brew.
+You can also use a RY836AI (tested), a [SparkFun MPU9250 breakout board](https://www.sparkfun.com/products/13762) (tested), [XINY MPU9250 BMP280](https://smile.amazon.com/gp/product/B01N0L05M2/) (tested) or your own home brew.
 
-The code also has a driver for the BMP280, which also exists on both the OpenFlightSolutions AHRS board and the RY836AI.
+The code also has a driver for the BMP280, which also exists on the OpenFlightSolutions AHRS board, the RY836AI and the XINY.
 If you have one of these boards or a separate dev board, the pressure altitude and rate of climb will be used in the algorithm.
 
-{{< note title="Note" >}} I intended to support the MPU-9150 also (which is the sensor chip on the RY835AI).
+{{< note title="RY835AI Not Currently Supported" >}} I intended to support the MPU-9150 also (which is the sensor chip on the RY835AI).
 However, the driver for this sensor was removed from the main Stratux code.
-It was pretty ugly anyway--it was a thin Go wrapper around the original C driver.
+It was pretty ugly--it was a thin Go wrapper around the original C driver.
 I may write a pure Go driver if there is sufficient interest.
 The MPU-9250 performs better anyway.
 The same is true of the BMP-180 (RY835AI) vs the BMP-280 (RY836AI).
@@ -28,8 +28,16 @@ The same is true of the BMP-180 (RY835AI) vs the BMP-280 (RY836AI).
 
 ## Download
 
-You can download the image from the [Releases](https://github.com/westphae/stratux/releases) area of the GitHub page.
+You can download the [image](https://github.com/westphae/stratux/releases/download/ahrs0.1/stratux-ahrs0.1-2ba3f136bb.img.zip) from the [Releases](https://github.com/westphae/stratux/releases) page of the GitHub project page.
 Just burn it like any other Stratux image.
+
+{{< note title="Differences from Stock Stratux Image" >}} This image is based on the stock stratux image stratux-v1.2r1-9ee46170ff.img.zip downloaded from stratux.me.
+I had to make a few changes:
+1. the image is 4GB rather than 2GB to allow for log growth--if beta testers experience issues, it will be helpful to send me log files.  You will need a SD Card at least 4GB for this reason; if yours is larger, you may still want to expand the image to fill it. 
+2. /root/stratux points to https://github.com/westphae/stratux rather than https://github.com/cyoung/stratux.
+3. I re-enabled dhcpcd so that developers can connect to it via a wired connection for downloading data, updating, etc.
+4. I added my ssh public key for root access.
+{{< /note >}}
 
 
 ## Sensor Pinout
@@ -53,7 +61,7 @@ If you use the RY836AI, you can also connect its GPS:
 | TXD          | Pin 10 (RXD0)    |
 | RXD          | Pin 08 (TXD0)    |
 
-![Raspberry Pi Pins](/img/raspi_pins.png "Raspberry Pi Pins")
+[![Raspberry Pi Pins](/img/raspi_pins.png "Raspberry Pi Pins")](/img/raspi_pins.png)
 
 Be sure to affix the sensor firmly to the Stratux box.
 The sensor must not be able to move around in flight or the AHRS will give false indications.
