@@ -24,6 +24,7 @@ My phone is on the left showing the Stratux Webpage UI AHRS indicator.
 Dual Aspens are on the right.
 Currently it indicates a bit too much bank and the pitch indications are not very accurate.
 But the fundamental issues of AHRS are solved and the indications are close enough to reality to be useful.
+*The project is definitey still in BETA!*
 
 [![AHRS on Youtube](https://img.youtube.com/vi/hbV1bGDzHmw/0.jpg)](https://youtu.be/hbV1bGDzHmw)
 
