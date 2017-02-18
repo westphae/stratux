@@ -25,4 +25,4 @@ If you're not on Slack, you can use one of the links at left.
 
 ## Acknowledgments
 
-I would like to thank Steve Sokol of http://openflightsolutions.com for his input, motivation through his AHRS Challenge, and for providing a prototype AHRS board for testing.  His products are also top notch--highly recommended!
+I would like to thank Steve Sokol of http://openflightsolutions.com for his input, feedback, motivation through his AHRS Challenge, and for providing a prototype AHRS board for testing.  His products are also top notch--highly recommended!
