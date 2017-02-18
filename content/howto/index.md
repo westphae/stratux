@@ -69,9 +69,12 @@ Tilting the sensor should result in some motion of the AI, though possibly not i
 
 ![StratuxAI](/img/AHRS_Screenshot.png "Stratux Horizon Indicator")
 
-There is also a "Calibrate AHRS Sensors" button on the "Settings" page.
+This is done via a "Calibrate AHRS Sensors" button on the "Settings" page.
 
 I also added a "CPU Load" area to the "Status" page.
+
+Finally, there is a "Sensors" switch on the "Settings" page.
+*If your Attitude Indicator doesn't respond when you move the sensor, be sure that this switch is on!*
 
 
 ## Sensor Orientation
@@ -99,21 +102,29 @@ The setting will be stored with your other settings on your SDCard.
 It goes without saying that this is best done on the ground, with the engine off...
 
 The calibration routine uses gravity to tell the algorithm which way is which.
-On the settings page, if you click on "Calibrate AHRS Sensors", it will guide you through this process.
-You will first orient the sensor so that the end that will be pointing forward in flight is instead pointing straight up.
+On the Settings page, if you click on "Calibrate AHRS Sensors", it will guide you through this process.
+
+[![Web UI Calibrate Screenshot](/img/screenshot_calibrate.png "Stratux Web UI AHRS Calibrate screenshot")](/img/screenshot_calibrate.png)
+
+Once you click this button, you will first orient the sensor so that the end that will be pointing forward in flight is instead pointing straight up.
+
+[![Web UI Forward Calibration Screenshot](/img/screenshot_orientation_forward.png "Stratux Web UI AHRS forward calibration screenshot")](/img/screenshot_orientation_forward.png)
+
 "Straight" just means that it is pointing up more than the other two axes, say a pitch angle of 70° or more.
-
-![Stratux Forward Orientation](/img/stratux_orientation_1.jpg "Stratux orientation for forward direction")
-
 Then the axis which feels the most gravity will be considered "forward."  
 Once you are holding the sensor in this attitude, "nose-up," then click the "Set Forward Direction" button.
+
+![Stratux Forward Orientation](/img/stratux_orientation_1.jpg "Stratux orientation for forward direction")
 
 Now you just place the sensor in the orientation it will ultimately rest in the airplane.
 
 ![Stratux Up Orientation](/img/stratux_orientation_2.jpg "Stratux orientation for up direction")
 
 Then click the "Set Up Direction" button and gravity will tell the algorithm which direction will be Up.
-From this, we know which direction will be toward the left wing.
+
+[![Web UI Up Calibration Screenshot](/img/screenshot_orientation_up.png "Stratux Web UI AHRS up calibration screenshot")](/img/screenshot_orientation_up.png)
+
+From this, we can calculate which direction will be toward the left wing, so there is no need to tell the algorithm this.
 
 You're now ready to fly!
 
