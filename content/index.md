@@ -10,8 +10,7 @@ type = "index"
 This project is a [fork](https://github.com/westphae/stratux) of the [Stratux](https://github.com/cyoung/stratux) project.
 It is mainly intended to provide AHRS (Attitude Heading and Reference System) features.
 
-I created this site to help beta testers to download, install, and use this fork,
-and to provide me feedback and/or collaborate on its further development.
+I created this site to help beta testers to download, install, and use this fork, and to provide me feedback and/or collaborate on its further development.
 
 AHRS support requires writing drivers for sensor hardware, Kalman filter and other approaches
 for determining attitude from sensor input, and software simulators for testing these algorithms.
@@ -20,6 +19,13 @@ The main code for AHRS is in a separate GitHub repository of mine, https://githu
 This fork incorporates minimal changes into the stratux code to integrate the AHRS code from the goflying library.
 Hopefully it will eventually be merged into the main stratux project.
 
+You can watch a video of my flight testing the AHRS in my Bonanza V35B.
+My phone is on the left showing the Stratux Webpage UI AHRS indicator.
+Dual Aspens are on the right.
+Currently it indicates a bit too much bank and the pitch indications are not very accurate.
+But the fundamental issues of AHRS are solved and the indications are close enough to reality to be useful.
+
+[![AHRS on Youtube](https://img.youtube.com/vi/hbV1bGDzHmw/0.jpg)](https://youtu.be/hbV1bGDzHmw)
 
 {{< warning title="This AHRS will not save your life." >}}
 I was partially motivated to develop this software due to losing my vacuum pump-driven attitude indicator system (including standby pump within an hour each time!) no less than three times over the course of 2700 hours of flying.
