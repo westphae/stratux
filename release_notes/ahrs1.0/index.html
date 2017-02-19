@@ -9,18 +9,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
-    <title>Collaboration - AHRS for Stratux</title>
+    <title>ahrs1.0 - AHRS for Stratux</title>
     <meta name="generator" content="Hugo 0.19-DEV" />
 
     
     <meta name="description" content="stratux with AHRS">
     
-    <link rel="canonical" href="https://westphae.github.io/stratux/collaboration/">
+    <link rel="canonical" href="https://westphae.github.io/stratux/release_notes/ahrs1.0/">
     
     <meta name="author" content="Eric Westphal">
     
 
-    <meta property="og:url" content="https://westphae.github.io/stratux/collaboration/">
+    <meta property="og:url" content="https://westphae.github.io/stratux/release_notes/ahrs1.0/">
     <meta property="og:title" content="AHRS for Stratux">
     <meta property="og:image" content="https://westphae.github.io/img/AHRS_Screenshot.png">
     <meta name="apple-mobile-web-app-title" content="AHRS for Stratux">
@@ -99,7 +99,7 @@
     </div>
     <div class="stretch">
       <div class="title">
-        Collaboration
+        ahrs1.0
       </div>
     </div>
 
@@ -240,14 +240,11 @@
 
 
 
-<a class="current" title="Collaboration" href="https://westphae.github.io/stratux/collaboration/">
+<a  title="Collaboration" href="https://westphae.github.io/stratux/collaboration/">
 	
 	Collaboration
 </a>
 
-
-<ul id="scrollspy">
-</ul>
 
 
   
@@ -314,28 +311,21 @@
 
 	<article class="article">
 		<div class="wrapper">
-			<h1>Collaboration </h1>
+			<h1>ahrs1.0 </h1>
 
-			
+			<p>The initial beta release, <a href="https://github.com/westphae/stratux/releases/download/ahrs0.1/stratux-ahrs0.1-2ba3f136bb.img.zip">ahrs1.0</a>, is available on the <a href="https://github.com/westphae/stratux">https://github.com/westphae/stratux</a> releases page.
+This release uses the &ldquo;SimpleAHRS&rdquo; algorithm.
+In essence, it calculates the turn rate based on GPS, then applies corrections using the MPU-9250 gyro sensors.
+This allows it to respond to attitude changes much more quickly than GPS alone can, and also to indicate uncoordinated maneuvers.
+The algorithm doesn&rsquo;t use a Kalman filter.</p>
 
-<p><img src="https://westphae.github.io/stratux/img/contact-bg.jpg" alt="splash" /></p>
-
-<h2 id="issues">Issues</h2>
-
-<p>Submit any issues on my fork&rsquo;s <a href="https://github.com/westphae/stratux/issues">issues</a> area.
-Every flight creates a file in /var/log/sensors_YYYYMMDD_HHMMSS.csv, which you can upload.
-It might also be helpful to upload /var/log/stratux.log in certain situations.</p>
-
-<h2 id="feedback">Feedback</h2>
-
-<p>Please contact me on <a href="https://stratuxadsb.slack.com/team/bonanzaeric">Slack</a>, either with a direct message
-or in the <a href="https://stratuxadsb.slack.com/messages/ahrs/">ahrs</a> channel.</p>
-
-<p>If you&rsquo;re not on Slack, you can use one of the links at left.</p>
-
-<h2 id="acknowledgments">Acknowledgments</h2>
-
-<p>I would like to thank Steve Sokol of <a href="http://openflightsolutions.com">http://openflightsolutions.com</a> for his input, feedback, motivation through his AHRS Challenge, and for providing a prototype AHRS board for testing.  His products are also top notch&ndash;highly recommended!</p>
+<div class="admonition note">
+<p class="admonition-title">Go Compilation Problem</p>
+<p>There is an issue with this initial release: I compiled it with Go 1.7.
+I had discovered that the goroutines in main/network.go sometimes panic when concurrently reading and writing to a particular map when compiled with Go versions 1.6 or higher (other projects have the same issue), so had put a mutex on the map that had issues.
+However, on my latest flight I noticed that I am still getting panics from other maps in main/network.go, so I am going to have to issue a new release compiled with Go 1.5.4.
+I expect to issue this new release shortly, after I return from vacation.</p>
+</div>
 
 
 			<aside class="copyright" role="note">
@@ -354,18 +344,34 @@ or in the <a href="https://stratuxadsb.slack.com/messages/ahrs/">ahrs</a> channe
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
   
+      <a href="https://westphae.github.io/stratux/plan/" title="My Plan for AHRS Development">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              My Plan for AHRS Development
+            </div>
+          </div>
+        </div>
+      </a>
+  
   </div>
 
   <div class="next">
   
-      <a href="https://westphae.github.io/stratux/howto/" title="A Stratux AHRS image for beta testers">
+      <a href="https://westphae.github.io/stratux/" title="AHRS for Stratux">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              A Stratux AHRS image for beta testers
+              AHRS for Stratux
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">

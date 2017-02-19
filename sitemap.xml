@@ -17,6 +17,11 @@
   </url>
   
   <url>
+    <loc>https://westphae.github.io/stratux/release_notes/ahrs1.0/</loc>
+    <lastmod>2017-02-18T21:19:59-05:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://westphae.github.io/stratux/</loc>
     <lastmod>2017-01-18T22:36:35+00:00</lastmod>
   </url>
@@ -42,6 +47,12 @@
   <url>
     <loc>https://westphae.github.io/stratux/plan/</loc>
     <lastmod>2017-01-18T16:40:25-05:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://westphae.github.io/stratux/release_notes/</loc>
+    <lastmod>2017-02-18T21:19:59-05:00</lastmod>
     <priority>0</priority>
   </url>
   
