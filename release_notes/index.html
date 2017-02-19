@@ -9,18 +9,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=10" />
-    <title>AHRS for Stratux</title>
+    <title>Release Notes - AHRS for Stratux</title>
     <meta name="generator" content="Hugo 0.19-DEV" />
 
     
     <meta name="description" content="stratux with AHRS">
     
-    <link rel="canonical" href="https://westphae.github.io/stratux/">
+    <link rel="canonical" href="https://westphae.github.io/stratux/release_notes/">
     
     <meta name="author" content="Eric Westphal">
     
 
-    <meta property="og:url" content="https://westphae.github.io/stratux/">
+    <meta property="og:url" content="https://westphae.github.io/stratux/release_notes/">
     <meta property="og:title" content="AHRS for Stratux">
     <meta property="og:image" content="https://westphae.github.io/img/AHRS_Screenshot.png">
     <meta name="apple-mobile-web-app-title" content="AHRS for Stratux">
@@ -71,9 +71,6 @@
     <script src="https://westphae.github.io/stratux/javascripts/modernizr.js"></script>
 
     
-    <link href="https://westphae.github.io/stratux/index.xml" rel="alternate" type="application/rss+xml" title="AHRS for Stratux" />
-    <link href="https://westphae.github.io/stratux/index.xml" rel="feed" type="application/rss+xml" title="AHRS for Stratux" />
-    
 
   </head>
   <body class="palette-primary-red palette-accent-teal">
@@ -102,7 +99,7 @@
     </div>
     <div class="stretch">
       <div class="title">
-        AHRS for Stratux
+        Release Notes
       </div>
     </div>
 
@@ -225,11 +222,14 @@
 
 
 
-<a  title="Release Notes" href="https://westphae.github.io/stratux/release_notes/">
+<a class="current" title="Release Notes" href="https://westphae.github.io/stratux/release_notes/">
 	
 	Release Notes
 </a>
 
+
+<ul id="scrollspy">
+</ul>
 
 
   
@@ -314,51 +314,26 @@
 
 	<article class="article">
 		<div class="wrapper">
+			<h1>Release Notes </h1>
+
 			
-				<h1>AHRS for Stratux </h1>
 
-				<p><img src="https://westphae.github.io/stratux/img/intro-bg.jpg" alt="splash" /></p>
+<h2 id="ahrs0-1">ahrs0.1</h2>
 
-<p>This project is a <a href="https://github.com/westphae/stratux">fork</a> of the <a href="https://github.com/cyoung/stratux">Stratux</a> project.
-It is mainly intended to provide AHRS (Attitude Heading and Reference System) features.</p>
+<p>The initial beta release, <a href="https://github.com/westphae/stratux/releases/download/ahrs0.1/stratux-ahrs0.1-2ba3f136bb.img.zip">ahrs0.1</a>, is available on the <a href="https://github.com/westphae/stratux">https://github.com/westphae/stratux</a> releases page.
+This release uses the &ldquo;SimpleAHRS&rdquo; algorithm.
+In essence, it calculates the turn rate based on GPS, then applies corrections using the MPU-9250 gyro sensors.
+This allows it to respond to attitude changes much more quickly than GPS alone can, and also to indicate uncoordinated maneuvers.
+The algorithm doesn&rsquo;t use a Kalman filter.</p>
 
-<p>I created this site to help beta testers to download, install, and use this fork, and to provide me feedback and/or collaborate on its further development.</p>
-
-<p>AHRS support requires writing drivers for sensor hardware, Kalman filter and other approaches
-for determining attitude from sensor input, and software simulators for testing these algorithms.
-The main code for AHRS is in a separate GitHub repository of mine, <a href="https://github.com/westphae/goflying">https://github.com/westphae/goflying</a>.</p>
-
-<p>This fork incorporates minimal changes into the stratux code to integrate the AHRS code from the goflying library.
-Hopefully it will eventually be merged into the main stratux project.</p>
-
-<p>You can watch a video of my flight testing the AHRS in my Bonanza V35B.
-My phone is on the left showing the Stratux Webpage UI AHRS indicator.
-Dual Aspens are on the right.
-Currently it indicates a bit too much bank and the pitch indications are not very accurate.
-But the fundamental issues of AHRS are solved and the indications are close enough to reality to be useful.
-<em>The project is definitey still in BETA!</em></p>
-
-<p><a href="https://youtu.be/hbV1bGDzHmw"><img src="https://img.youtube.com/vi/hbV1bGDzHmw/0.jpg" alt="AHRS on Youtube" /></a></p>
-
-<div class="admonition warning">
-<p class="admonition-title">This AHRS will not save your life.</p>
-<p>I was partially motivated to develop this software due to losing my vacuum pump-driven attitude indicator system (including standby pump within an hour each time!) no less than three times over the course of 2700 hours of flying.
-The last time, at night over the Egyptian Saharan desert, I at least had a clear sky above (there was oftentimes not a single light in the desert below).
-My autopilot was also driven by the attitude indicator, so I had to both keep upright and hand-fly through the pitch black for hours.</p>
-
-<p>Fortunately, this last time I also had a MidCon LifeSaver electrical backup.
-Even surrounded by inky blackness above and below, with no horizon visible outside, between the stars above and the MidCon certified backup, I was able to continue without any loss of situational awareness.
-However, the thought crossed my mind many times as I flew on through the dark for hours that the MidCon was my last and only backup.
-If I had to do an instrument approach, I would be partial panel.
-I would really have loved to have had at least one potential additional and fully independent backup system, if only to provide me some comfort and an independent check for my partial panel flying.</p>
-
-<p>It goes without saying that a self-built attitude indicator system that can potentially be thrown willy nilly up on the glareshield, in a severely uncontrolled environment, and running software that has never been certified by any independent agent should not be relied upon in any but the most dire of circumstances.
-Even then, you would be very wise to fly partial panel on certified instruments and use any such system as this only as a cross-reference.</p>
-
-<p>If this software ever serves just to provide some comfort to a pilot in an event such as I experienced, it will have served its purpose.  Its purpose is not to save your life.</p>
+<div class="admonition note">
+<p class="admonition-title">Go Compilation Problem</p>
+<p>There is an issue with this initial release: I compiled it with Go 1.7.
+I had discovered that the goroutines in main/network.go sometimes panic when concurrently reading and writing to a particular map when compiled with Go versions 1.6 or higher (other projects have the same issue), so had put a mutex on the map that had issues.
+However, on my latest flight I noticed that I am still getting panics from other maps in main/network.go, so I am going to have to issue a new release compiled with Go 1.5.4.
+I expect to issue this new release shortly, after I return from vacation.</p>
 </div>
 
-			
 
 			<aside class="copyright" role="note">
 				
@@ -373,23 +348,37 @@ Even then, you would be very wise to fly partial panel on certified instruments 
 			<footer class="footer">
 				
 
-
-
 <nav class="pagination" aria-label="Footer">
   <div class="previous">
+  
+      <a href="https://westphae.github.io/stratux/plan/" title="My Plan for AHRS Development">
+        <span class="direction">
+          Previous
+        </span>
+        <div class="page">
+          <div class="button button-previous" role="button" aria-label="Previous">
+            <i class="icon icon-back"></i>
+          </div>
+          <div class="stretch">
+            <div class="title">
+              My Plan for AHRS Development
+            </div>
+          </div>
+        </div>
+      </a>
+  
   </div>
 
-  
-  
   <div class="next">
-      <a href="https://westphae.github.io/stratux/plan/" title="Plans">
+  
+      <a href="https://westphae.github.io/stratux/" title="AHRS for Stratux">
         <span class="direction">
           Next
         </span>
         <div class="page">
           <div class="stretch">
             <div class="title">
-              Plans
+              AHRS for Stratux
             </div>
           </div>
           <div class="button button-next" role="button" aria-label="Next">
@@ -397,8 +386,11 @@ Even then, you would be very wise to fly partial panel on certified instruments 
           </div>
         </div>
       </a>
+  
   </div>
 </nav>
+
+
 
 
 
@@ -459,19 +451,6 @@ Even then, you would be very wise to fly partial panel on certified instruments 
             a.setAttribute("href", "#" + headers[i].id);
             a.setAttribute("title", "Permanent link")
             a.innerHTML = "#";
-            headers[i].appendChild(a);
-        }
-      }
-    </script>
-
-    
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-  </body>
-</html>
-
-
             headers[i].appendChild(a);
         }
       }
