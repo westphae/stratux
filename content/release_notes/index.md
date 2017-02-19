@@ -1,11 +1,12 @@
 +++
 date = "2017-02-18T21:19:59-05:00"
-title = "ahrs1.0"
+title = "Release Notes"
 draft = false
 
 +++
 
-The initial beta release, [ahrs1.0](https://github.com/westphae/stratux/releases/download/ahrs0.1/stratux-ahrs0.1-2ba3f136bb.img.zip), is available on the https://github.com/westphae/stratux releases page.
+## ahrs0.1
+The initial beta release, [ahrs0.1](https://github.com/westphae/stratux/releases/download/ahrs0.1/stratux-ahrs0.1-2ba3f136bb.img.zip), is available on the https://github.com/westphae/stratux releases page.
 This release uses the "SimpleAHRS" algorithm.
 In essence, it calculates the turn rate based on GPS, then applies corrections using the MPU-9250 gyro sensors.
 This allows it to respond to attitude changes much more quickly than GPS alone can, and also to indicate uncoordinated maneuvers.
