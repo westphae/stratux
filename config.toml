@@ -57,6 +57,12 @@ theme = "hugo-material-docs"
     pre = ""
 
 [[menu.main]]
+    name = "Release Notes"
+    url = "release_notes/"
+    weight = 15
+    pre = ""
+
+[[menu.main]]
     name = "Collaboration"
     url = "collaboration/"
     weight = 20
