@@ -24,7 +24,7 @@
 
 &lt;p&gt;To use this image, in addition to the normal Stratux requriements, you&amp;rsquo;ll need to connect an MPU-9250 sensor to your Stratux.
 The OpenFlightSolutions AHRS board is a great choice.
-You can also use a RY836AI (tested), a &lt;a href=&#34;https://www.sparkfun.com/products/13762&#34;&gt;SparkFun MPU9250 breakout board&lt;/a&gt; (tested), &lt;a href=&#34;https://smile.amazon.com/gp/product/B01N0L05M2/&#34;&gt;XINY MPU9250 BMP280&lt;/a&gt; (tested) or your own home brew.&lt;/p&gt;
+You can also use a RY836AI (tested), a &lt;a href=&#34;https://www.sparkfun.com/products/13762&#34;&gt;SparkFun MPU9250 breakout board&lt;/a&gt; (not yet tested), &lt;a href=&#34;https://smile.amazon.com/gp/product/B01N0L05M2/&#34;&gt;XINY MPU9250 BMP280&lt;/a&gt; (not yet tested) or your own home brew.&lt;/p&gt;
 
 &lt;p&gt;The code also has a driver for the BMP280, which also exists on the OpenFlightSolutions AHRS board, the RY836AI and the XINY.
 If you have one of these boards or a separate dev board, the pressure altitude and rate of climb will be used in the algorithm.&lt;/p&gt;
@@ -44,7 +44,7 @@ Just burn it like any other Stratux image.&lt;/p&gt;
 
 &lt;div class=&#34;admonition note&#34;&gt;
 &lt;p class=&#34;admonition-title&#34;&gt;Differences from Stock Stratux Image&lt;/p&gt;
-&lt;p&gt;This image is based on the stock stratux image stratux-v1.2r1-9ee46170ff.img.zip downloaded from stratux.me.
+&lt;p&gt;This image is based on the stock Stratux image stratux-v1.2r1-9ee46170ff.img.zip downloaded from stratux.me.
 I had to make a few changes:
 1. /root/stratux points to &lt;a href=&#34;https://github.com/westphae/stratux&#34;&gt;https://github.com/westphae/stratux&lt;/a&gt; rather than &lt;a href=&#34;https://github.com/cyoung/stratux&#34;&gt;https://github.com/cyoung/stratux&lt;/a&gt;.
 2. I re-enabled dhcpcd so that developers can connect to it via a wired connection for downloading data, updating, etc.
@@ -144,7 +144,7 @@ Tilting the sensor should result in some motion of the AI, though possibly not i
 The purpose of this calibration is to determine a preliminary zero value for the gyro and accelerometer.&lt;/p&gt;
 
 &lt;p&gt;It is very important when doing this calibration that the sensor remain fairly still.
-It is usually OK for it to be sitting on the glareshield with the engine running, though at these early (beta release) stages it might be better to start the stratux up and ensure it is operating before starting the engine.
+It is usually OK for it to be sitting on the glareshield with the engine running, though at these early (beta release) stages it might be better to start the Stratux up and ensure it is operating before starting the engine.
 It will not calibrate if the sensor is waved around or wiggling too much.&lt;/p&gt;
 
 &lt;p&gt;You will know that the sensor is calibrated when the heading on the attitude indicator swerves to show 90 degrees.
