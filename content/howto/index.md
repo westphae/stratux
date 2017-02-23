@@ -17,10 +17,8 @@ You can also use a RY836AI (tested), a [SparkFun MPU9250 breakout board](https:/
 The code also has a driver for the BMP280, which also exists on the OpenFlightSolutions AHRS board, the RY836AI and the XINY.
 If you have one of these boards or a separate dev board, the pressure altitude and rate of climb will be used in the algorithm.
 
-{{< note title="RY835AI Not Currently Supported" >}} I intended to support the MPU-9150 also (which is the sensor chip on the RY835AI).
-However, the driver for this sensor was removed from the main Stratux code.
-It was pretty ugly--it was a thin Go wrapper around the original C driver.
-I may write a pure Go driver if there is sufficient interest.
+{{< note title="RY835AI Not Currently Supported" >}} If there is sufficient demand, I will support the MPU-9150 also (which is the sensor chip on the RY835AI).
+This would require writing a pure Go driver.
 The MPU-9250 performs better anyway.
 The same is true of the BMP-180 (RY835AI) vs the BMP-280 (RY836AI).
 {{< /note >}}
@@ -28,15 +26,14 @@ The same is true of the BMP-180 (RY835AI) vs the BMP-280 (RY836AI).
 
 ## Download
 
-You can download the [image](https://github.com/westphae/stratux/releases/download/ahrs0.1/stratux-ahrs0.1-2ba3f136bb.img.zip) from the [Releases](https://github.com/westphae/stratux/releases) page of the GitHub project page.
+You can download the [image](https://github.com/westphae/stratux/releases/download/ahrs0.2/stratux-ahrs0.2-34396a36e5.img.zip) from the [Releases](https://github.com/westphae/stratux/releases) page of the GitHub project page.
 Just burn it like any other Stratux image.
 
 {{< note title="Differences from Stock Stratux Image" >}} This image is based on the stock stratux image stratux-v1.2r1-9ee46170ff.img.zip downloaded from stratux.me.
 I had to make a few changes:
-1. the image is 4GB rather than 2GB to allow for log growth--if beta testers experience issues, it will be helpful to send me log files.  You will need a SD Card at least 4GB for this reason; if yours is larger, you may still want to expand the image to fill it. 
-2. /root/stratux points to https://github.com/westphae/stratux rather than https://github.com/cyoung/stratux.
-3. I re-enabled dhcpcd so that developers can connect to it via a wired connection for downloading data, updating, etc.
-4. I added my ssh public key for root access.
+1. /root/stratux points to https://github.com/westphae/stratux rather than https://github.com/cyoung/stratux.
+2. I re-enabled dhcpcd so that developers can connect to it via a wired connection for downloading data, updating, etc.
+3. I added my ssh public key for root access.
 {{< /note >}}
 
 
@@ -85,10 +82,25 @@ Finally, there is a "Sensors" switch on the "Settings" page.
 *If your Attitude Indicator doesn't respond when you move the sensor, be sure that this switch is on!*
 
 
+## Stratux Startup
+
+When this fork of Stratux is first started, it tries to connect to the sensors and, once successful, performs a separate "calibration."
+The purpose of this calibration is to determine a preliminary zero value for the gyro and accelerometer.
+
+It is very important when doing this calibration that the sensor remain fairly still.
+It is usually OK for it to be sitting on the glareshield with the engine running, though at these early (beta release) stages it might be better to start the stratux up and ensure it is operating before starting the engine.
+It will not calibrate if the sensor is waved around or wiggling too much.
+
+You will know that the sensor is calibrated when the heading on the attitude indicator swerves to show 90 degrees.
+Then you can pick up the sensor, wave it around and see how the attitude indicator responds.
+
+
 ## Sensor Orientation
 
-As noted earlier, it is crucial that the Stratux remain in one position in your aircraft--if it slides around, it will lose orientation.
+As noted earlier, it is crucial that the sensor remain in one position in your aircraft--if it slides around or wiggles, it will lose orientation.
 OpenFlightSolutions has a really nice base with a grippy bottom surface for their OpenFlightBox that works great for me.
+The OpenFlightBox AHRS board also affixes very firmly to the Raspberry Pi, so there is no chance for wiggling.
+With another sensor like a RY836AI, a XINY, etc. it is important to firmly affix the sensor to the case, Raspberry Pi, or something else so that it does not wiggle.
 
 In this initial release, the Stratux will need to be oriented roughly at "right angles" to the pitch, yaw and roll axes of the airplane, so give some thought to how it will be situated in your aircraft.
 It can sit in any orientation as long as one of the sensor's X, Y, or Z axes (positive or negative) points forward, one toward the left wing, and one up.
@@ -135,6 +147,7 @@ Then click the "Set Up Direction" button and gravity will tell the algorithm whi
 From this, we can calculate which direction will be toward the left wing, so there is no need to tell the algorithm this.
 
 You're now ready to fly!
+
 
 ## GPS-Only Attitude
 
