@@ -17,7 +17,8 @@ You can also use a RY836AI (tested), a [SparkFun MPU9250 breakout board](https:/
 The code also has a driver for the BMP280, which also exists on the OpenFlightSolutions AHRS board, the RY836AI and the XINY.
 If you have one of these boards or a separate dev board, the pressure altitude and rate of climb will be used in the algorithm.
 
-{{< note title="RY835AI Not Currently Supported" >}} If there is sufficient demand, I will support the MPU-9150 also (which is the sensor chip on the RY835AI).
+{{< note title="RY835AI Not Currently Supported" >}}
+If there is sufficient demand, I will support the MPU-9150 also (which is the sensor chip on the RY835AI).
 This would require writing a pure Go driver.
 The MPU-9250 performs better anyway.
 The same is true of the BMP-180 (RY835AI) vs the BMP-280 (RY836AI).
@@ -29,7 +30,8 @@ The same is true of the BMP-180 (RY835AI) vs the BMP-280 (RY836AI).
 You can download the [image](https://github.com/westphae/stratux/releases/download/ahrs0.2/stratux-ahrs0.2-34396a36e5.img.zip) from the [Releases](https://github.com/westphae/stratux/releases) page of the GitHub project page.
 Just burn it like any other Stratux image.
 
-{{< note title="Differences from Stock Stratux Image" >}} This image is based on the stock Stratux image stratux-v1.2r1-9ee46170ff.img.zip downloaded from stratux.me.
+{{< note title="Differences from Stock Stratux Image" >}}
+This image is based on the stock Stratux image stratux-v1.2r1-9ee46170ff.img.zip downloaded from stratux.me.
 I had to make a few changes:
 1. /root/stratux points to https://github.com/westphae/stratux rather than https://github.com/cyoung/stratux.
 2. I re-enabled dhcpcd so that developers can connect to it via a wired connection for downloading data, updating, etc.
@@ -114,6 +116,12 @@ Eventually I may write a more sophisticated self-calibration routine that will o
 
 ## Sensor Calibration
 
+{{< note title="Orientation Dialog Boxes have Changed" >}}
+The screenshots below are from an earlier version of the software.
+The button name changed from "Calibrate AHRS Sensors" to "Set AHRS Sensor Orientation" and the dialog boxes are smaller to fit on a small (phone) screen.
+The procedure remains the same, however.
+{{< /note >}}
+
 Now we will perform a "calibration."
 This is not a full sensor calibration, it is just a means to tell the AHRS algorithm the orientation of the Stratux box in the airplane, i.e. which sensor axis corresponds to which aircraft axis.
 It needs to know which end of the sensor will point forward (along the roll axis), which end will point up (along the yaw axis), and which toward the left wing (along the pitch axis).
@@ -122,7 +130,7 @@ The setting will be stored with your other settings on your SDCard.
 It goes without saying that this is best done on the ground, with the engine off...
 
 The calibration routine uses gravity to tell the algorithm which way is which.
-On the Settings page, if you click on "Calibrate AHRS Sensors", it will guide you through this process.
+On the Settings page, if you click on "Set AHRS Sensor Orientation", it will guide you through this process.
 
 [![Web UI Calibrate Screenshot](/img/screenshot_calibrate.png "Stratux Web UI AHRS Calibrate screenshot")](/img/screenshot_calibrate.png)
 
