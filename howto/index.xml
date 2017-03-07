@@ -135,8 +135,8 @@ Tilting the sensor should result in some motion of the AI, though possibly not i
 
 &lt;p&gt;I also added a &amp;ldquo;CPU Load&amp;rdquo; area to the &amp;ldquo;Status&amp;rdquo; page.&lt;/p&gt;
 
-&lt;p&gt;Finally, there is a &amp;ldquo;Sensors&amp;rdquo; switch on the &amp;ldquo;Settings&amp;rdquo; page.
-&lt;em&gt;If your Attitude Indicator doesn&amp;rsquo;t respond when you move the sensor, be sure that this switch is on!&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Finally, there &amp;ldquo;Attitude Sensor&amp;rdquo; and &amp;ldquo;Altitude Sensor&amp;rdquo; switches on the &amp;ldquo;Settings&amp;rdquo; page.
+&lt;em&gt;If your Attitude Indicator doesn&amp;rsquo;t respond when you move the sensor, be sure that these switches are on!&lt;/em&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;stratux-startup&#34;&gt;Stratux Startup&lt;/h2&gt;
 
