@@ -168,6 +168,13 @@ Eventually I may write a more sophisticated self-calibration routine that will o
 
 &lt;h2 id=&#34;sensor-calibration&#34;&gt;Sensor Calibration&lt;/h2&gt;
 
+&lt;div class=&#34;admonition note&#34;&gt;
+&lt;p class=&#34;admonition-title&#34;&gt;Orientation Dialog Boxes have Changed&lt;/p&gt;
+&lt;p&gt;The screenshots below are from an earlier version of the software.
+The button name changed from &amp;ldquo;Calibrate AHRS Sensors&amp;rdquo; to &amp;ldquo;Set AHRS Sensor Orientation&amp;rdquo; and the dialog boxes are smaller to fit on a small (phone) screen.
+The procedure remains the same, however.&lt;/p&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Now we will perform a &amp;ldquo;calibration.&amp;rdquo;
 This is not a full sensor calibration, it is just a means to tell the AHRS algorithm the orientation of the Stratux box in the airplane, i.e. which sensor axis corresponds to which aircraft axis.
 It needs to know which end of the sensor will point forward (along the roll axis), which end will point up (along the yaw axis), and which toward the left wing (along the pitch axis).
@@ -176,7 +183,7 @@ The setting will be stored with your other settings on your SDCard.
 It goes without saying that this is best done on the ground, with the engine off&amp;hellip;&lt;/p&gt;
 
 &lt;p&gt;The calibration routine uses gravity to tell the algorithm which way is which.
-On the Settings page, if you click on &amp;ldquo;Calibrate AHRS Sensors&amp;rdquo;, it will guide you through this process.&lt;/p&gt;
+On the Settings page, if you click on &amp;ldquo;Set AHRS Sensor Orientation&amp;rdquo;, it will guide you through this process.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://westphae.github.io/stratux/img/screenshot_calibrate.png&#34;&gt;&lt;img src=&#34;https://westphae.github.io/stratux/img/screenshot_calibrate.png&#34; alt=&#34;Web UI Calibrate Screenshot&#34; title=&#34;Stratux Web UI AHRS Calibrate screenshot&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 

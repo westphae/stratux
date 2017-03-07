@@ -197,6 +197,13 @@ Eventually I may write a more sophisticated self-calibration routine that will o
 
 &lt;h2 id=&#34;sensor-calibration&#34;&gt;Sensor Calibration&lt;/h2&gt;
 
+&lt;div class=&#34;admonition note&#34;&gt;
+&lt;p class=&#34;admonition-title&#34;&gt;Orientation Dialog Boxes have Changed&lt;/p&gt;
+&lt;p&gt;The screenshots below are from an earlier version of the software.
+The button name changed from &amp;ldquo;Calibrate AHRS Sensors&amp;rdquo; to &amp;ldquo;Set AHRS Sensor Orientation&amp;rdquo; and the dialog boxes are smaller to fit on a small (phone) screen.
+The procedure remains the same, however.&lt;/p&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Now we will perform a &amp;ldquo;calibration.&amp;rdquo;
 This is not a full sensor calibration, it is just a means to tell the AHRS algorithm the orientation of the Stratux box in the airplane, i.e. which sensor axis corresponds to which aircraft axis.
 It needs to know which end of the sensor will point forward (along the roll axis), which end will point up (along the yaw axis), and which toward the left wing (along the pitch axis).
@@ -205,7 +212,7 @@ The setting will be stored with your other settings on your SDCard.
 It goes without saying that this is best done on the ground, with the engine off&amp;hellip;&lt;/p&gt;
 
 &lt;p&gt;The calibration routine uses gravity to tell the algorithm which way is which.
-On the Settings page, if you click on &amp;ldquo;Calibrate AHRS Sensors&amp;rdquo;, it will guide you through this process.&lt;/p&gt;
+On the Settings page, if you click on &amp;ldquo;Set AHRS Sensor Orientation&amp;rdquo;, it will guide you through this process.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://westphae.github.io/stratux/img/screenshot_calibrate.png&#34;&gt;&lt;img src=&#34;https://westphae.github.io/stratux/img/screenshot_calibrate.png&#34; alt=&#34;Web UI Calibrate Screenshot&#34; title=&#34;Stratux Web UI AHRS Calibrate screenshot&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 
@@ -320,15 +327,28 @@ The next iteration will use GPS, gyro, accelerometer, barometer, and possibly ma
 
 &lt;p&gt;For issues, see the GitHub &lt;a href=&#34;https://github.com/westphae/stratux/issues&#34;&gt;issues&lt;/a&gt; page.&lt;/p&gt;
 
+&lt;h2 id=&#34;ahrs0-3&#34;&gt;ahrs0.3&lt;/h2&gt;
+
+&lt;h3 id=&#34;mar-6-2017&#34;&gt;Mar 6, 2017&lt;/h3&gt;
+
+&lt;p&gt;The third beta release, &lt;a href=&#34;https://github.com/westphae/stratux/releases/download/ahrs0.3/stratux-ahrs0.3-e78146ab99.img.zip&#34;&gt;ahrs0.3&lt;/a&gt;, is available on the &lt;a href=&#34;https://github.com/westphae/stratux&#34;&gt;https://github.com/westphae/stratux&lt;/a&gt; releases page.
+This release uses the &amp;ldquo;SimpleAHRS&amp;rdquo; algorithm.&lt;/p&gt;
+
+&lt;p&gt;Changes:
+1. Fixed a tendency to display an overbank, especially at higher bank angles.  This was caused by smoothing the turn rate rather than smoothing the roll.  Turn rate noise is highly non-normal, so the fat tails led to a skewed ewma.
+2. Various UI changes:
+  * Separate switches to turn on/off the IMU (attitude) and BMP (altitude) sensors.  This is mostly useful for pressurized aircraft.
+  * A switch to turn off csv logging of the AHRS data.
+  * The orientation dialog was unusable on small (phone) screens since it overflowed, so most of the text was moved to the help page.
+3. Better initialization routines, so that glareshield vibration or turbulence won&amp;rsquo;t prevent initialization.
+4. Refactoring of various interfaces within the Go code.&lt;/p&gt;
+
 &lt;h2 id=&#34;ahrs0-2&#34;&gt;ahrs0.2&lt;/h2&gt;
 
 &lt;h3 id=&#34;feb-22-2017&#34;&gt;Feb 22, 2017&lt;/h3&gt;
 
 &lt;p&gt;The second beta release, &lt;a href=&#34;https://github.com/westphae/stratux/releases/download/ahrs0.2/stratux-ahrs0.2-34396a36e5.img.zip&#34;&gt;ahrs0.2&lt;/a&gt;, is available on the &lt;a href=&#34;https://github.com/westphae/stratux&#34;&gt;https://github.com/westphae/stratux&lt;/a&gt; releases page.
-This release uses the &amp;ldquo;SimpleAHRS&amp;rdquo; algorithm.
-In essence, it calculates the turn rate based on GPS, then applies corrections using the MPU-9250 gyro sensors.
-This allows it to respond to attitude changes much more quickly than GPS alone can, and also to indicate uncoordinated maneuvers.
-The algorithm doesn&amp;rsquo;t use a Kalman filter.&lt;/p&gt;
+This release uses the &amp;ldquo;SimpleAHRS&amp;rdquo; algorithm.&lt;/p&gt;
 
 &lt;p&gt;Changes:
 1. Fixed an issue where if the Sensors switch were on and no BMP280 were attached, gen_gdl90 would panic.
@@ -359,9 +379,8 @@ It is mainly intended to provide AHRS (Attitude Heading and Reference System) fe
 
 &lt;p&gt;I created this site to help beta testers to download, install, and use this fork, and to provide me feedback and/or collaborate on its further development.&lt;/p&gt;
 
-&lt;p&gt;AHRS support requires writing drivers for sensor hardware, Kalman filter and other approaches
-for determining attitude from sensor input, and software simulators for testing these algorithms.
-The main code for AHRS is in a separate GitHub repository of mine, &lt;a href=&#34;https://github.com/westphae/goflying&#34;&gt;https://github.com/westphae/goflying&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;AHRS support requires writing drivers for sensor hardware, Kalman filter and other approaches for determining attitude from sensor input, and software simulators for testing these algorithms.
+The main code for AHRS is in a separate GitHub repository, &lt;a href=&#34;https://github.com/westphae/goflying&#34;&gt;https://github.com/westphae/goflying&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;This fork incorporates minimal changes into the stratux code to integrate the AHRS code from the goflying library.
 Hopefully it will eventually be merged into the main stratux project.&lt;/p&gt;
@@ -369,7 +388,7 @@ Hopefully it will eventually be merged into the main stratux project.&lt;/p&gt;
 &lt;p&gt;You can watch a video of my flight testing the AHRS in my Bonanza V35B.
 My phone is on the left showing the Stratux Webpage UI AHRS indicator.
 Dual Aspens are on the right.
-Currently it indicates a bit too much bank and the pitch indications are not very accurate.
+Currently the pitch indications are not very accurate.
 But the fundamental issues of AHRS are solved and the indications are close enough to reality to be useful.
 &lt;em&gt;The project is definitey still in BETA!&lt;/em&gt;&lt;/p&gt;
 

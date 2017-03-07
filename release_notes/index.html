@@ -144,7 +144,7 @@
         </div>
       
       <div class="name">
-        <strong>AHRS for Stratux <span class="version">0.1</span></strong>
+        <strong>AHRS for Stratux <span class="version">0.3</span></strong>
         
           <br>
           westphae/stratux
@@ -322,15 +322,28 @@
 
 <p>For issues, see the GitHub <a href="https://github.com/westphae/stratux/issues">issues</a> page.</p>
 
+<h2 id="ahrs0-3">ahrs0.3</h2>
+
+<h3 id="mar-6-2017">Mar 6, 2017</h3>
+
+<p>The third beta release, <a href="https://github.com/westphae/stratux/releases/download/ahrs0.3/stratux-ahrs0.3-e78146ab99.img.zip">ahrs0.3</a>, is available on the <a href="https://github.com/westphae/stratux">https://github.com/westphae/stratux</a> releases page.
+This release uses the &ldquo;SimpleAHRS&rdquo; algorithm.</p>
+
+<p>Changes:
+1. Fixed a tendency to display an overbank, especially at higher bank angles.  This was caused by smoothing the turn rate rather than smoothing the roll.  Turn rate noise is highly non-normal, so the fat tails led to a skewed ewma.
+2. Various UI changes:
+  * Separate switches to turn on/off the IMU (attitude) and BMP (altitude) sensors.  This is mostly useful for pressurized aircraft.
+  * A switch to turn off csv logging of the AHRS data.
+  * The orientation dialog was unusable on small (phone) screens since it overflowed, so most of the text was moved to the help page.
+3. Better initialization routines, so that glareshield vibration or turbulence won&rsquo;t prevent initialization.
+4. Refactoring of various interfaces within the Go code.</p>
+
 <h2 id="ahrs0-2">ahrs0.2</h2>
 
 <h3 id="feb-22-2017">Feb 22, 2017</h3>
 
 <p>The second beta release, <a href="https://github.com/westphae/stratux/releases/download/ahrs0.2/stratux-ahrs0.2-34396a36e5.img.zip">ahrs0.2</a>, is available on the <a href="https://github.com/westphae/stratux">https://github.com/westphae/stratux</a> releases page.
-This release uses the &ldquo;SimpleAHRS&rdquo; algorithm.
-In essence, it calculates the turn rate based on GPS, then applies corrections using the MPU-9250 gyro sensors.
-This allows it to respond to attitude changes much more quickly than GPS alone can, and also to indicate uncoordinated maneuvers.
-The algorithm doesn&rsquo;t use a Kalman filter.</p>
+This release uses the &ldquo;SimpleAHRS&rdquo; algorithm.</p>
 
 <p>Changes:
 1. Fixed an issue where if the Sensors switch were on and no BMP280 were attached, gen_gdl90 would panic.
