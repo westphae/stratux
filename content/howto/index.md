@@ -80,7 +80,7 @@ This is done via a "Calibrate AHRS Sensors" button on the "Settings" page.
 
 I also added a "CPU Load" area to the "Status" page.
 
-Finally, there "Attitude Sensor" and "Altitude Sensor" switches on the "Settings" page.
+Finally, there are "Attitude Sensor" and "Altitude Sensor" switches on the "Settings" page.
 *If your Attitude Indicator doesn't respond when you move the sensor, be sure that these switches are on!*
 
 
