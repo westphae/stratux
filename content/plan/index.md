@@ -16,8 +16,10 @@ This allows it to respond to changes in attitude in realtime and to account some
 However, it does still have a few deficiencies.
 Mainly, it cannot get pitch quite right.
 Also, uncoordinated maneuvers that persist for more than a few seconds will begin to display incorrectly.
+I have plans to improve both pitch and uncoordinated maneuvers in the next few releases (probably by ahrs0.6).
+These are stepping stones to a true AHRS system.
 
-A true AHRS system should be based on a Kalman filter (or derivative) fusion of sensors:
+A true AHRS system should be based on a Kalman filter fusion of sensors:
 
 * Gyros
 * Accelerations
