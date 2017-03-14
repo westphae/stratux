@@ -322,6 +322,48 @@
 
 <p>For issues, see the GitHub <a href="https://github.com/westphae/stratux/issues">issues</a> page.</p>
 
+<div class="admonition note">
+<p class="admonition-title">FIRST THING TO DO IF YOU HAVE AN ISSUE WITH AN UPGRADE</p>
+<p>As the AHRS software is in beta, the web UI undergoes a lot of changes with every release.
+If something seems wrong when you first connect after upgrading, <strong>the first thing to do is a hard refresh of the webpage.</strong>
+There is a button on the Developer page to do this if you don&rsquo;t know how to do it in your browser.</p>
+</div>
+
+<h2 id="ahrs0-4">ahrs0.4</h2>
+
+<h3 id="mar-13-2017">Mar 13, 2017</h3>
+
+<p>The fourth beta release, <a href="https://github.com/westphae/stratux/releases/download/ahrs0.4/stratux-ahrs0.4-adfa54813a.img.zip">ahrs0.4</a>, is available on the <a href="https://github.com/westphae/stratux">https://github.com/westphae/stratux</a> releases page.
+An <a href="https://github.com/westphae/stratux/releases/download/ahrs0.4/update-stratux-ahrs0.4-ef8064c09f.sh">update.sh</a> file is also available.
+This release uses the &ldquo;SimpleAHRS&rdquo; algorithm.</p>
+
+<p>Changes:</p>
+
+<ol>
+<li>Sensor orientation now completes when sensors are mounted in any orientation.
+Previously when sensors were mounted &ldquo;upside down&rdquo; relative to my prototype board the orientation was rejected.</li>
+<li>Only one cage process at a time is allowed.
+Previously if a user pressed &ldquo;Cage&rdquo; a second time while the algorithm was still calibrating from the first press,
+a second calibration would take place immediately, making it seem like it would never complete.</li>
+<li>AHRS status lights were added to show whether the AHRS algorithm is using GPS, Attitude sensors (MPU9250), and/or
+Altitude sensors (BMP280), and whether it is currently Calibrating and/or Logging (which can eat up disk space quickly).
+It is especially important for the user to be able to see the calibration process occurring, so that it is apparent why the AI isn&rsquo;t responding.</li>
+<li>A G Meter is shown on the GPS/AHRS page.</li>
+<li>Magnetic Heading, Turn Rate, Slip/Skid Angle, and G Load are shown in text on the GPS/AHRS page.
+Magnetic Heading will not be useful until the magnetometer is calibrated.
+I may add an auto-calibration routine to a future release so that it will self-calibrate over the course of several flights, and/or add a manual calibration routine.</li>
+<li>The slip/skid rectangle on the attitude indicator works now.
+For now, it will only indicate correctly if the sensor is level in coordinated flight.
+In the future, auto-calibration will do this for you automatically.</li>
+<li>A few labels were changed in the UI to make meanings clearer to the casual user.</li>
+<li>Deeper changes were made to the MPU9250 driver to improve its efficiency.
+One of these changes involved removing a rudimentary accelerometer calibration.
+As a result, <strong>when on the desktop, the AHRS will not quite indicate level&ndash;it will indicate the actual orientation of the sensor.</strong>
+Even fairly rigidly mounted boards may indicate a degree or two of pitch or bank when sitting on a level desk.
+For now, you can regard this as an assist in manually leveling your stratux on your glareshield.
+An upcoming release will include a proper calibration, which is necessary to provide better pitch estimation.</li>
+</ol>
+
 <h2 id="ahrs0-3">ahrs0.3</h2>
 
 <h3 id="mar-6-2017">Mar 6, 2017</h3>
@@ -329,14 +371,20 @@
 <p>The third beta release, <a href="https://github.com/westphae/stratux/releases/download/ahrs0.3/stratux-ahrs0.3-e78146ab99.img.zip">ahrs0.3</a>, is available on the <a href="https://github.com/westphae/stratux">https://github.com/westphae/stratux</a> releases page.
 This release uses the &ldquo;SimpleAHRS&rdquo; algorithm.</p>
 
-<p>Changes:
-1. Fixed a tendency to display an overbank, especially at higher bank angles.  This was caused by smoothing the turn rate rather than smoothing the roll.  Turn rate noise is highly non-normal, so the fat tails led to a skewed ewma.
-2. Various UI changes:
-  * Separate switches to turn on/off the IMU (attitude) and BMP (altitude) sensors.  This is mostly useful for pressurized aircraft.
-  * A switch to turn off csv logging of the AHRS data.
-  * The orientation dialog was unusable on small (phone) screens since it overflowed, so most of the text was moved to the help page.
-3. Better initialization routines, so that glareshield vibration or turbulence won&rsquo;t prevent initialization.
-4. Refactoring of various interfaces within the Go code.</p>
+<p>Changes:</p>
+
+<ol>
+<li>Fixed a tendency to display an overbank, especially at higher bank angles.  This was caused by smoothing the turn rate rather than smoothing the roll.  Turn rate noise is highly non-normal, so the fat tails led to a skewed ewma.</li>
+<li>Various UI changes:
+
+<ul>
+<li>Separate switches to turn on/off the IMU (attitude) and BMP (altitude) sensors.  This is mostly useful for pressurized aircraft.</li>
+<li>A switch to turn off csv logging of the AHRS data.</li>
+<li>The orientation dialog was unusable on small (phone) screens since it overflowed, so most of the text was moved to the help page.</li>
+</ul></li>
+<li>Better initialization routines, so that glareshield vibration or turbulence won&rsquo;t prevent initialization.</li>
+<li>Refactoring of various interfaces within the Go code.</li>
+</ol>
 
 <h2 id="ahrs0-2">ahrs0.2</h2>
 
@@ -345,9 +393,12 @@ This release uses the &ldquo;SimpleAHRS&rdquo; algorithm.</p>
 <p>The second beta release, <a href="https://github.com/westphae/stratux/releases/download/ahrs0.2/stratux-ahrs0.2-34396a36e5.img.zip">ahrs0.2</a>, is available on the <a href="https://github.com/westphae/stratux">https://github.com/westphae/stratux</a> releases page.
 This release uses the &ldquo;SimpleAHRS&rdquo; algorithm.</p>
 
-<p>Changes:
-1. Fixed an issue where if the Sensors switch were on and no BMP280 were attached, gen_gdl90 would panic.
-2. Fixed a panic in network.go due to concurrent reading/writing of a map.</p>
+<p>Changes:</p>
+
+<ol>
+<li>Fixed an issue where if the Sensors switch were on and no BMP280 were attached, gen_gdl90 would panic.</li>
+<li>Fixed a panic in network.go due to concurrent reading/writing of a map.</li>
+</ol>
 
 <h2 id="ahrs0-1">ahrs0.1</h2>
 
