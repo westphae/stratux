@@ -66,7 +66,7 @@ I had to make a few changes:
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td&gt;VDD&lt;/td&gt;
-&lt;td&gt;Pin 02 (or 04)&lt;/td&gt;
+&lt;td&gt;Pin 01&lt;/td&gt;
 &lt;/tr&gt;
 
 &lt;tr&gt;
@@ -115,6 +115,8 @@ I had to make a few changes:
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+
+&lt;p&gt;With the RY836AI, you should also connect its VDD to Pin 02 or 04 (5V) instead of 01 (3.3V).&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&#34;https://westphae.github.io/stratux/img/raspi_pins.png&#34;&gt;&lt;img src=&#34;https://westphae.github.io/stratux/img/raspi_pins.png&#34; alt=&#34;Raspberry Pi Pins&#34; title=&#34;Raspberry Pi Pins&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 
