@@ -45,7 +45,7 @@ Pinouts for the MPU-9250 are as follows:
 
 | MPU-9250 Pin | Raspberry Pi Pin |
 |--------------|------------------|
-| VDD          | Pin 02 (or 04)   |
+| VDD          | Pin 01           |
 | GND          | Pin 06           |
 | FSYNC        | Pin 09           |
 | SDA1         | Pin 03           |
@@ -59,6 +59,8 @@ If you use the RY836AI, you can also connect its GPS:
 |--------------|------------------|
 | TXD          | Pin 10 (RXD0)    |
 | RXD          | Pin 08 (TXD0)    |
+
+With the RY836AI, you should also connect its VDD to Pin 02 or 04 (5V) instead of 01 (3.3V).
 
 [![Raspberry Pi Pins](/img/raspi_pins.png "Raspberry Pi Pins")](/img/raspi_pins.png)
 
