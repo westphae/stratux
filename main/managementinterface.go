@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 	"syscall"
 	"text/template"
@@ -38,6 +39,31 @@ var weatherUpdate *uibroadcaster
 
 // Traffic updates channel.
 var trafficUpdate *uibroadcaster
+var gdl90Update *uibroadcaster
+
+func handleGDL90WS(conn *websocket.Conn) {
+	// Subscribe the socket to receive updates.
+	gdl90Update.AddSocket(conn)
+
+	// Connection closes when function returns. Since uibroadcast is writing and we don't need to read anything (for now), just keep it busy.
+	for {
+		buf := make([]byte, 1024)
+		_, err := conn.Read(buf)
+		if err != nil {
+			break
+		}
+		if buf[0] != 0 { // Dummy.
+			continue
+		}
+		time.Sleep(1 * time.Second)
+	}
+}
+
+// Situation updates channel.
+var situationUpdate *uibroadcaster
+
+// Raw weather (UATFrame packet stream) update channel.
+var weatherRawUpdate *uibroadcaster
 
 // Iridium messaging/weather updates channel.
 var iridiumUpdate *uibroadcaster
@@ -142,6 +168,36 @@ func handleWeatherWS(conn *websocket.Conn) {
 	}
 }
 
+func handleJsonIo(conn *websocket.Conn) {
+	trafficMutex.Lock()
+	for _, traf := range traffic {
+		if !traf.Position_valid { // Don't send unless a valid position exists.
+			continue
+		}
+		trafficJSON, _ := json.Marshal(&traf)
+		conn.Write(trafficJSON)
+	}
+	// Subscribe the socket to receive updates.
+	trafficUpdate.AddSocket(conn)
+	weatherRawUpdate.AddSocket(conn)
+	situationUpdate.AddSocket(conn)
+
+	trafficMutex.Unlock()
+
+	// Connection closes when function returns. Since uibroadcast is writing and we don't need to read anything (for now), just keep it busy.
+	for {
+		buf := make([]byte, 1024)
+		_, err := conn.Read(buf)
+		if err != nil {
+			break
+		}
+		if buf[0] != 0 { // Dummy.
+			continue
+		}
+		time.Sleep(1 * time.Second)
+	}
+}
+
 // Works just as weather updates do.
 
 func handleTrafficWS(conn *websocket.Conn) {
@@ -189,7 +245,6 @@ func handleStatusWS(conn *websocket.Conn) {
 		*/
 
 		// Send status.
-		<-timer.C
 		update, _ := json.Marshal(&globalStatus)
 		_, err := conn.Write(update)
 
@@ -197,19 +252,20 @@ func handleStatusWS(conn *websocket.Conn) {
 			//			log.Printf("Web client disconnected.\n")
 			break
 		}
+		<-timer.C
 	}
 }
 
 func handleSituationWS(conn *websocket.Conn) {
 	timer := time.NewTicker(100 * time.Millisecond)
 	for {
-		<-timer.C
 		situationJSON, _ := json.Marshal(&mySituation)
 		_, err := conn.Write(situationJSON)
 
 		if err != nil {
 			break
 		}
+		<-timer.C
 
 	}
 
@@ -252,13 +308,13 @@ func handleTowersRequest(w http.ResponseWriter, r *http.Request) {
 func handleSatellitesRequest(w http.ResponseWriter, r *http.Request) {
 	setNoCache(w)
 	setJSONHeaders(w)
-	satelliteMutex.Lock()
+	mySituation.muSatellite.Lock()
 	satellitesJSON, err := json.Marshal(&Satellites)
 	if err != nil {
 		log.Printf("Error sending GNSS satellite JSON data: %s\n", err.Error())
 	}
 	fmt.Fprintf(w, "%s\n", satellitesJSON)
-	satelliteMutex.Unlock()
+	mySituation.muSatellite.Unlock()
 }
 
 // AJAX call - /getSettings. Responds with all stratux.conf data.
@@ -304,8 +360,18 @@ func handleSettingsSetRequest(w http.ResponseWriter, r *http.Request) {
 						globalSettings.Ping_Enabled = val.(bool)
 					case "GPS_Enabled":
 						globalSettings.GPS_Enabled = val.(bool)
-					case "AHRS_Enabled":
-						globalSettings.AHRS_Enabled = val.(bool)
+					case "IMU_Sensor_Enabled":
+						globalSettings.IMU_Sensor_Enabled = val.(bool)
+						if !globalSettings.IMU_Sensor_Enabled && globalStatus.IMUConnected {
+							myIMUReader.Close()
+							globalStatus.IMUConnected = false
+						}
+					case "BMP_Sensor_Enabled":
+						globalSettings.BMP_Sensor_Enabled = val.(bool)
+						if !globalSettings.BMP_Sensor_Enabled && globalStatus.BMPConnected {
+							myPressureReader.Close()
+							globalStatus.BMPConnected = false
+						}
 					case "DEBUG":
 						globalSettings.DEBUG = val.(bool)
 					case "DisplayTrafficSource":
@@ -314,6 +380,14 @@ func handleSettingsSetRequest(w http.ResponseWriter, r *http.Request) {
 						v := val.(bool)
 						if v != globalSettings.ReplayLog { // Don't mark the files unless there is a change.
 							globalSettings.ReplayLog = v
+						}
+					case "AHRSLog":
+						globalSettings.AHRSLog = val.(bool)
+					case "IMUMapping":
+						if globalSettings.IMUMapping != val.([2]int) {
+							globalSettings.IMUMapping = val.([2]int)
+							myIMUReader.Close()
+							globalStatus.IMUConnected = false // Force a restart of the IMU reader
 						}
 					case "PPM":
 						globalSettings.PPM = int(val.(float64))
@@ -351,6 +425,26 @@ func handleSettingsSetRequest(w http.ResponseWriter, r *http.Request) {
 							continue
 						}
 						globalSettings.OwnshipModeS = fmt.Sprintf("%02X%02X%02X", hexn[0], hexn[1], hexn[2])
+					case "StaticIps":
+						ipsStr := val.(string)
+						ips := strings.Split(ipsStr, " ")
+						if ipsStr == "" {
+							ips = make([]string, 0)
+						}
+
+						re, _ := regexp.Compile(`^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$`)
+						err := ""
+						for _, ip := range ips {
+							// Verify IP format
+							if !re.MatchString(ip) {
+								err = err + "Invalid IP: " + ip + ". "
+							}
+						}
+						if err != "" {
+							log.Printf("handleSettingsSetRequest:StaticIps: %s\n", err)
+							continue
+						}
+						globalSettings.StaticIps = ips
 					default:
 						log.Printf("handleSettingsSetRequest:json: unrecognized key:%s\n", key)
 					}
@@ -375,6 +469,22 @@ func doReboot() {
 	syscall.Reboot(syscall.LINUX_REBOOT_CMD_RESTART)
 }
 
+func handleDeleteLogFile(w http.ResponseWriter, r *http.Request) {
+	log.Printf("handleDeleteLogFile called!!!\n")
+	clearDebugLogFile()
+}
+
+func handleDevelModeToggle(w http.ResponseWriter, r *http.Request) {
+	log.Printf("handleDevelModeToggle called!!!\n")
+	globalSettings.DeveloperMode = true
+	saveSettings()
+}
+
+func handleRestartRequest(w http.ResponseWriter, r *http.Request) {
+	log.Printf("handleRestartRequest called\n")
+	go doRestartApp()
+}
+
 func handleRebootRequest(w http.ResponseWriter, r *http.Request) {
 	setNoCache(w)
 	setJSONHeaders(w)
@@ -383,17 +493,116 @@ func handleRebootRequest(w http.ResponseWriter, r *http.Request) {
 	go delayReboot()
 }
 
+var f int // We need this to be global to handle successive calls to handleOrientAHRS.
+
+func handleOrientAHRS(w http.ResponseWriter, r *http.Request) {
+	// define header in support of cross-domain AJAX
+	setNoCache(w)
+	w.Header().Set("Content-Type", "text/plain")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Method", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+
+	// For an OPTION method request, we return header without processing.
+	// This ensures we are recognized as supporting cross-domain AJAX REST calls.
+	if r.Method == "POST" {
+		var (
+			action []byte = make([]byte, 1)
+			u      int
+			err    error
+		)
+
+		if _, err = r.Body.Read(action); err != nil {
+			log.Println("AHRS Error: handleOrientAHRS received invalid request")
+			http.Error(w, "orientation received invalid request", http.StatusBadRequest)
+		}
+
+		switch action[0] {
+		case 'f': // Set sensor "forward" direction (toward nose of airplane).
+			if f, err = getMinAccelDirection(); err != nil {
+				log.Printf("AHRS Error: sensor orientation: couldn't read accelerometer: %s\n", err)
+				http.Error(w, fmt.Sprintf("couldn't read accelerometer: %s\n", err), http.StatusBadRequest)
+				return
+			}
+			log.Printf("AHRS Info: sensor orientation: received forward direction %d\n", f)
+		case 'u': // Set sensor "up" direction (toward top of airplane).
+			if u, err = getMinAccelDirection(); err != nil {
+				log.Printf("AHRS Error: sensor orientation: couldn't read accelerometer: %s\n", err)
+				http.Error(w, fmt.Sprintf("couldn't read accelerometer: %s\n", err), http.StatusBadRequest)
+				return
+			}
+			log.Printf("AHRS Info: sensor orientation: received up direction %d\n", u)
+
+			if f == u || f == -u {
+				log.Println("AHRS Error: sensor orientation: up and forward axes cannot be the same")
+				http.Error(w, "up and forward axes cannot be the same", http.StatusBadRequest)
+				return
+			}
+
+			globalSettings.IMUMapping = [2]int{f, u}
+			saveSettings()
+			myIMUReader.Close()
+			globalStatus.IMUConnected = false // restart the processes depending on the orientation
+			log.Printf("AHRS Info: sensor orientation success! forward: %d; up: %d\n", f, u)
+		default: // Cancel the sensor calibration.
+			f = 0
+			log.Println("AHRS Info: sensor orientation: canceled")
+		}
+
+	}
+}
+
+func handleCageAHRS(w http.ResponseWriter, r *http.Request) {
+	// define header in support of cross-domain AJAX
+	setNoCache(w)
+	w.Header().Set("Content-Type", "text/plain")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Method", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+
+	// For an OPTION method request, we return header without processing.
+	// This ensures we are recognized as supporting cross-domain AJAX REST calls.
+	if r.Method == "POST" {
+		CageAHRS()
+	}
+}
+
+func doRestartApp() {
+	time.Sleep(1)
+	syscall.Sync()
+	out, err := exec.Command("/bin/systemctl", "restart", "stratux").Output()
+	if err != nil {
+		log.Printf("restart error: %s\n%s", err.Error(), out)
+	} else {
+		log.Printf("restart: %s\n", out)
+	}
+}
+
 // AJAX call - /getClients. Responds with all connected clients.
 func handleClientsGetRequest(w http.ResponseWriter, r *http.Request) {
 	setNoCache(w)
 	setJSONHeaders(w)
+	netMutex.Lock()
 	clientsJSON, _ := json.Marshal(&outSockets)
+	netMutex.Unlock()
 	fmt.Fprintf(w, "%s\n", clientsJSON)
 }
 
 func delayReboot() {
 	time.Sleep(1 * time.Second)
 	doReboot()
+}
+
+func handleDownloadLogRequest(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "applicaiton/zip")
+	w.Header().Set("Content-Disposition", "attachment; filename='stratux.log'")
+	http.ServeFile(w, r, "/var/log/stratux.log")
+}
+
+func handleDownloadDBRequest(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "applicaiton/zip")
+	w.Header().Set("Content-Disposition", "attachment; filename='stratux.sqlite'")
+	http.ServeFile(w, r, "/var/log/stratux.sqlite")
 }
 
 // Upload an update file.
@@ -578,11 +787,20 @@ func managementInterface() {
 	rockBLOCKSerialConn = r
 	// Set the message handler for incoming messages.
 	rockBLOCKSerialConn.SetMessageHandler(iridiumMessageCallback)
+	situationUpdate = NewUIBroadcaster()
+	weatherRawUpdate = NewUIBroadcaster()
+	gdl90Update = NewUIBroadcaster()
 
 	http.HandleFunc("/", defaultServer)
 	http.Handle("/logs/", http.StripPrefix("/logs/", http.FileServer(http.Dir("/var/log"))))
 	http.HandleFunc("/view_logs/", viewLogs)
 
+	http.HandleFunc("/gdl90",
+		func(w http.ResponseWriter, req *http.Request) {
+			s := websocket.Server{
+				Handler: websocket.Handler(handleGDL90WS)}
+			s.ServeHTTP(w, req)
+		})
 	http.HandleFunc("/status",
 		func(w http.ResponseWriter, req *http.Request) {
 			s := websocket.Server{
@@ -614,17 +832,33 @@ func managementInterface() {
 			s.ServeHTTP(w, req)
 		})
 
+	http.HandleFunc("/jsonio",
+		func(w http.ResponseWriter, req *http.Request) {
+			s := websocket.Server{
+				Handler: websocket.Handler(handleJsonIo)}
+			s.ServeHTTP(w, req)
+		})
+
 	http.HandleFunc("/getStatus", handleStatusRequest)
 	http.HandleFunc("/getSituation", handleSituationRequest)
 	http.HandleFunc("/getTowers", handleTowersRequest)
 	http.HandleFunc("/getSatellites", handleSatellitesRequest)
 	http.HandleFunc("/getSettings", handleSettingsGetRequest)
 	http.HandleFunc("/setSettings", handleSettingsSetRequest)
+	http.HandleFunc("/restart", handleRestartRequest)
 	http.HandleFunc("/shutdown", handleShutdownRequest)
 	http.HandleFunc("/reboot", handleRebootRequest)
 	http.HandleFunc("/getClients", handleClientsGetRequest)
 	http.HandleFunc("/updateUpload", handleUpdatePostRequest)
 	http.HandleFunc("/roPartitionRebuild", handleroPartitionRebuild)
+	http.HandleFunc("/develmodetoggle", handleDevelModeToggle)
+
+	http.HandleFunc("/orientAHRS", handleOrientAHRS)
+	http.HandleFunc("/cageAHRS", handleCageAHRS)
+
+	http.HandleFunc("/deletelogfile", handleDeleteLogFile)
+	http.HandleFunc("/downloadlog", handleDownloadLogRequest)
+	http.HandleFunc("/downloaddb", handleDownloadDBRequest)
 
 	err = http.ListenAndServe(managementAddr, nil)
 

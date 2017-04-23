@@ -11,6 +11,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"github.com/tarm/serial"
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv4"
@@ -58,24 +59,39 @@ type serialConnection struct {
 }
 
 var messageQueue chan networkMessage
+
 var outSockets map[string]networkConnection
 var dhcpLeases map[string]string
-var netMutex *sync.Mutex
+var pingResponse map[string]time.Time // Last time an IP responded to an "echo" response.
+var netMutex *sync.Mutex              // netMutex needs to be locked before accessing dhcpLeases, pingResponse, and outSockets and calling isSleeping() and isThrottled().
 
 var totalNetworkMessagesSent uint32
-
-var pingResponse map[string]time.Time // Last time an IP responded to an "echo" response.
 
 const (
 	NETWORK_GDL90_STANDARD = 1
 	NETWORK_AHRS_FFSIM     = 2
 	NETWORK_AHRS_GDL90     = 4
 	dhcp_lease_file        = "/var/lib/dhcp/dhcpd.leases"
+	dhcp_lease_dir         = "/var/lib/dhcp"
 	extra_hosts_file       = "/etc/stratux-static-hosts.conf"
 )
 
+var dhcpLeaseFileWarning bool
+var dhcpLeaseDirectoryLastTest time.Time // Last time fsWriteTest() was run on the DHCP lease directory.
+
 // Read the "dhcpd.leases" file and parse out IP/hostname.
 func getDHCPLeases() (map[string]string, error) {
+	// Do a write test. Even if we are able to read the file, it may be out of date because there's a fs write issue.
+	// Only perform the test once every 5 minutes to minimize writes.
+	if !dhcpLeaseFileWarning && (stratuxClock.Since(dhcpLeaseDirectoryLastTest) >= 5*time.Minute) {
+		err := fsWriteTest(dhcp_lease_dir)
+		if err != nil {
+			err_p := fmt.Errorf("Write error on '%s', your EFB may have issues receiving weather and traffic.", dhcp_lease_dir)
+			addSystemError(err_p)
+			dhcpLeaseFileWarning = true
+		}
+		dhcpLeaseDirectoryLastTest = stratuxClock.Time
+	}
 	dat, err := ioutil.ReadFile(dhcp_lease_file)
 	ret := make(map[string]string)
 	if err != nil {
@@ -96,6 +112,13 @@ func getDHCPLeases() (map[string]string, error) {
 		} else if open_block && strings.HasPrefix(spaced[0], "}") { // No hostname.
 			open_block = false
 			ret[block_ip] = ""
+		}
+	}
+
+	// Add IP's set through the settings page
+	if globalSettings.StaticIps != nil {
+		for _, ip := range globalSettings.StaticIps {
+			ret[ip] = ""
 		}
 	}
 
@@ -121,11 +144,15 @@ func getDHCPLeases() (map[string]string, error) {
 	return ret, nil
 }
 
+/*
+	isSleeping().
+	 Check if a client identifier 'ip:port' is in either a sleep or active state.
+	 ***WARNING***: netMutex must be locked before calling this function.
+*/
 func isSleeping(k string) bool {
 	ipAndPort := strings.Split(k, ":")
-	lastPing, ok := pingResponse[ipAndPort[0]]
 	// No ping response. Assume disconnected/sleeping device.
-	if !ok || stratuxClock.Since(lastPing) > (10*time.Second) {
+	if lastPing, ok := pingResponse[ipAndPort[0]]; !ok || stratuxClock.Since(lastPing) > (10*time.Second) {
 		return true
 	}
 	if stratuxClock.Since(outSockets[k].LastUnreachable) < (5 * time.Second) {
@@ -134,8 +161,13 @@ func isSleeping(k string) bool {
 	return false
 }
 
-// Throttle mode for testing port open and giving some start-up time to the app.
-// Throttling is 0.1% data rate for first 15 seconds.
+/*
+	isThrottled().
+	 Checks if a client identifier 'ip:port' is throttled.
+	 Throttle mode is for testing port open and giving some start-up time to the app.
+	 Throttling is 0.1% data rate for first 15 seconds.
+	 ***WARNING***: netMutex must be locked before calling this function.
+*/
 func isThrottled(k string) bool {
 	return (rand.Int()%1000 != 0) && stratuxClock.Since(outSockets[k].LastUnreachable) < (15*time.Second)
 }
@@ -144,6 +176,7 @@ func sendToAllConnectedClients(msg networkMessage) {
 	if (msg.msgType & NETWORK_GDL90_STANDARD) != 0 {
 		// It's a GDL90 message. Send to serial output channel (which may or may not cause something to happen).
 		serialOutputChan <- msg.msg
+		networkGDL90Chan <- msg.msg
 	}
 
 	netMutex.Lock()
@@ -193,6 +226,14 @@ func sendToAllConnectedClients(msg networkMessage) {
 }
 
 var serialOutputChan chan []byte
+var networkGDL90Chan chan []byte
+
+func networkOutWatcher() {
+	for {
+		ch := <-networkGDL90Chan
+		gdl90Update.SendJSON(ch)
+	}
+}
 
 // Monitor serial output channel, send to serial port.
 func serialOutWatcher() {
@@ -253,6 +294,9 @@ func serialOutWatcher() {
 
 // Returns the number of DHCP leases and prints queue lengths.
 func getNetworkStats() {
+
+	netMutex.Lock()
+	defer netMutex.Unlock()
 
 	var numNonSleepingClients uint
 
@@ -325,7 +369,7 @@ func refreshConnectedClients() {
 }
 
 func messageQueueSender() {
-	secondTimer := time.NewTicker(15 * time.Second)
+	secondTimer := time.NewTicker(15 * time.Second) // getNetworkStats().
 	queueTimer := time.NewTicker(100 * time.Millisecond)
 
 	var lastQueueTimeChange time.Time // Reevaluate	send frequency every 5 seconds.
@@ -435,6 +479,7 @@ func icmpEchoSender(c *icmp.PacketConn) {
 	timer := time.NewTicker(5 * time.Second)
 	for {
 		<-timer.C
+		netMutex.Lock()
 		// Collect IPs.
 		ips := make(map[string]bool)
 		for k, _ := range outSockets {
@@ -461,6 +506,7 @@ func icmpEchoSender(c *icmp.PacketConn) {
 			}
 			totalNetworkMessagesSent++
 		}
+		netMutex.Unlock()
 	}
 }
 
@@ -489,7 +535,9 @@ func sleepMonitor() {
 
 		// Look for echo replies, mark it as received.
 		if msg.Type == ipv4.ICMPTypeEchoReply {
+			netMutex.Lock()
 			pingResponse[ip] = stratuxClock.Time
+			netMutex.Unlock()
 			continue // No further processing needed.
 		}
 
@@ -549,7 +597,7 @@ func networkStatsCounter() {
 /*
 	ffMonitor().
 		Watches for "i-want-to-play-ffm-udp", "i-can-play-ffm-udp", and "i-cannot-play-ffm-udp" UDP messages broadcasted on
-		 port 50113. Tags the client, issues a warning, and disables AHRS.
+		 port 50113. Tags the client, issues a warning, and disables AHRS GDL90 output.
 
 */
 
@@ -588,8 +636,7 @@ func ffMonitor() {
 		}
 		if strings.HasPrefix(s, "i-want-to-play-ffm-udp") || strings.HasPrefix(s, "i-can-play-ffm-udp") || strings.HasPrefix(s, "i-cannot-play-ffm-udp") {
 			p.FFCrippled = true
-			//FIXME: AHRS doesn't need to be disabled globally, just messages need to be filtered.
-			globalSettings.AHRS_Enabled = false
+			//FIXME: AHRS output doesn't need to be disabled globally, just on the ForeFlight client IPs.
 			if !ff_warned {
 				e := errors.New("Stratux is not supported by your EFB app. Your EFB app is known to regularly make changes that cause compatibility issues with Stratux. See the README for a list of apps that officially support Stratux.")
 				addSystemError(e)
@@ -604,6 +651,7 @@ func ffMonitor() {
 func initNetwork() {
 	messageQueue = make(chan networkMessage, 1024) // Buffered channel, 1024 messages.
 	serialOutputChan = make(chan []byte, 1024)     // Buffered channel, 1024 GDL90 messages.
+	networkGDL90Chan = make(chan []byte, 1024)
 	outSockets = make(map[string]networkConnection)
 	pingResponse = make(map[string]time.Time)
 	netMutex = &sync.Mutex{}
@@ -613,4 +661,5 @@ func initNetwork() {
 	go sleepMonitor()
 	go networkStatsCounter()
 	go serialOutWatcher()
+	go networkOutWatcher()
 }
