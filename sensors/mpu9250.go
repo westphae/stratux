@@ -2,7 +2,7 @@
 package sensors
 
 import (
-	"../goflying/mpu9250"
+	"github.com/westphae/goflying/mpu9250"
 )
 
 const (

@@ -8,11 +8,11 @@ import (
 	"strings"
 	"time"
 
-	"../goflying/ahrs"
-	"../goflying/ahrsweb"
-	"../sensors"
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/all"
+	"github.com/westphae/goflying/ahrs"
+	"github.com/westphae/goflying/ahrsweb"
+	"github.com/westphae/stratux/sensors"
 )
 
 const (

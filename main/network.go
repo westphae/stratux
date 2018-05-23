@@ -10,9 +10,6 @@
 package main
 
 import (
-	"github.com/tarm/serial"
-	"golang.org/x/net/icmp"
-	"golang.org/x/net/ipv4"
 	"io/ioutil"
 	"log"
 	"math"
@@ -23,6 +20,10 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/tarm/serial"
+	"golang.org/x/net/icmp"
+	"golang.org/x/net/ipv4"
 )
 
 type networkMessage struct {

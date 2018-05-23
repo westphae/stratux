@@ -4,15 +4,16 @@ import (
 	"fmt"
 	//	"time"
 	"bufio"
-	"gonum.org/v1/plot"
-	"gonum.org/v1/plot/plotter"
-	"gonum.org/v1/plot/plotutil"
-	"gonum.org/v1/plot/vg"
 	"os"
 	"sort"
 	"strconv"
 	"strings"
 	"unicode"
+
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/plotutil"
+	"gonum.org/v1/plot/vg"
 )
 
 func main() {

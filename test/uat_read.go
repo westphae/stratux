@@ -4,16 +4,15 @@ package main
 
 import (
 	"errors"
-	//	"fmt"
-	"../godump978"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/cyoung/stratux/godump978"
 	rtl "github.com/jpoirier/gortlsdr"
 	// "unsafe"
-	"fmt"
 )
 
 func sigAbort(dev *rtl.Context) {

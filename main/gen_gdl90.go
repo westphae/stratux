@@ -32,9 +32,9 @@ import (
 	"syscall"
 	"time"
 
-	"../uatparse"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/ricochet2200/go-disk-usage/du"
+	"github.com/westphae/stratux/uatparse"
 )
 
 // https://www.faa.gov/nextgen/programs/adsb/Archival/
@@ -1208,7 +1208,7 @@ func saveSettings() {
 func readWiFiUserSettings() {
 	fd, err := os.Open(wifiConfigLocation)
 	if err != nil {
-		log.Printf("can't read wifi settings %s: %s\n", wifiConfigLocation,     err.Error())
+		log.Printf("can't read wifi settings %s: %s\n", wifiConfigLocation, err.Error())
 		return
 	}
 	defer fd.Close()

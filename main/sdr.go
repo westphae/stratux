@@ -20,8 +20,8 @@ import (
 	"syscall"
 	"time"
 
-	"../godump978"
 	rtl "github.com/jpoirier/gortlsdr"
+	"github.com/westphae/stratux/godump978"
 )
 
 // Device holds per dongle values and attributes
