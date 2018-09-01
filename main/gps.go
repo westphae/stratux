@@ -274,6 +274,18 @@ func initGPSSerial() bool {
 
 		p.Write(makeUBXCFG(0x06, 0x24, 36, nav))
 
+		// Turn off "time pulse" (usually drives an LED).
+		tp5 := make([]byte, 32)
+		tp5[4] = 0x32
+		tp5[8] = 0x40
+		tp5[9] = 0x42
+		tp5[10] = 0x0F
+		tp5[12] = 0x40
+		tp5[13] = 0x42
+		tp5[14] = 0x0F
+		tp5[28] = 0xE7
+		p.Write(makeUBXCFG(0x06, 0x31, 32, tp5))
+
 		// GNSS configuration CFG-GNSS for ublox 7 higher, p. 125 (v8)
 
 		// Notes: ublox8 is multi-GNSS capable (simultaneous decoding of GPS and GLONASS, or
@@ -291,12 +303,12 @@ func initGPSSerial() bool {
 		glonass := []byte{0x06, 0x04, 0x0E, 0x00, 0x00, 0x00, 0x01, 0x01} // this disables GLONASS
 		galileo := []byte{0x02, 0x04, 0x08, 0x00, 0x00, 0x00, 0x01, 0x01} // this disables Galileo
 
-		if (globalStatus.GPS_detected_type == GPS_TYPE_UBX8) || (globalStatus.GPS_detected_type == GPS_TYPE_UART) { // assume that any GPS connected to serial GPIO is ublox8 (RY835/6AI)
-			//log.Printf("UBX8 device detected on USB, or GPS serial connection in use. Attempting GLONASS and Galelio configuration.\n")
-			glonass = []byte{0x06, 0x08, 0x0E, 0x00, 0x01, 0x00, 0x01, 0x01} // this enables GLONASS with 8-14 tracking channels
-			galileo = []byte{0x02, 0x04, 0x08, 0x00, 0x01, 0x00, 0x01, 0x01} // this enables Galileo with 4-8 tracking channels
-			updatespeed = []byte{0x06, 0x00, 0xF4, 0x01, 0x01, 0x00}         // Nav speed 2Hz
-		}
+		//if (globalStatus.GPS_detected_type == GPS_TYPE_UBX8) || (globalStatus.GPS_detected_type == GPS_TYPE_UART) { // assume that any GPS connected to serial GPIO is ublox8 (RY835/6AI)
+		//log.Printf("UBX8 device detected on USB, or GPS serial connection in use. Attempting GLONASS and Galelio configuration.\n")
+		//	glonass = []byte{0x06, 0x08, 0x0E, 0x00, 0x01, 0x00, 0x01, 0x01} // this enables GLONASS with 8-14 tracking channels
+		//	galileo = []byte{0x02, 0x04, 0x08, 0x00, 0x01, 0x00, 0x01, 0x01} // this enables Galileo with 4-8 tracking channels
+		//		updatespeed = []byte{0x06, 0x00, 0xF4, 0x01, 0x01, 0x00}         // Nav speed 2Hz
+		//	}
 		cfgGnss = append(cfgGnss, gps...)
 		cfgGnss = append(cfgGnss, sbas...)
 		cfgGnss = append(cfgGnss, beidou...)
@@ -916,11 +928,14 @@ func processNMEALine(l string) (sentenceUsed bool) {
 			tmpSituation.GPSNACp = calculateNACp(tmpSituation.GPSHorizontalAccuracy)
 
 			// field 10 = vertical accuracy, m
-			vAcc, err := strconv.ParseFloat(x[10], 32)
-			if err != nil {
-				return false
-			}
-			tmpSituation.GPSVerticalAccuracy = float32(vAcc * 2) // UBX reports 1-sigma variation; we want 95% confidence
+			/*
+				vAcc, err := strconv.ParseFloat(x[10], 32)
+				if err != nil {
+					return false
+				}
+				tmpSituation.GPSVerticalAccuracy = float32(vAcc * 2) // UBX reports 1-sigma variation; we want 95% confidence
+			*/
+			tmpSituation.GPSVerticalAccuracy = float32(2.) * tmpSituation.GPSHorizontalAccuracy
 
 			// field 2 = time
 			if len(x[2]) < 8 {
@@ -1834,6 +1849,71 @@ func makeFFAHRSSimReport() {
 	sendMsg([]byte(s), NETWORK_AHRS_FFSIM, false)
 }
 
+/*
+
+	ForeFlight "AHRS Message".
+
+	Sends AHRS information to ForeFlight.
+
+*/
+
+func makeFFAHRSMessage() {
+	msg := make([]byte, 12)
+	msg[0] = 0x65 // Message type "ForeFlight".
+	msg[1] = 0x01 // AHRS message identifier.
+
+	// Values if invalid
+	pitch := int16(0x7FFF)
+	roll := int16(0x7FFF)
+	hdg := uint16(0xFFFF)
+	ias := uint16(0xFFFF)
+	tas := uint16(0xFFFF)
+
+	if isAHRSValid() {
+		if !isAHRSInvalidValue(mySituation.AHRSPitch) {
+			pitch = roundToInt16(mySituation.AHRSPitch * 10)
+		}
+		if !isAHRSInvalidValue(mySituation.AHRSRoll) {
+			roll = roundToInt16(mySituation.AHRSRoll * 10)
+		}
+	}
+
+	// Roll.
+	msg[2] = byte((roll >> 8) & 0xFF)
+	msg[3] = byte(roll & 0xFF)
+
+	// Pitch.
+	msg[4] = byte((pitch >> 8) & 0xFF)
+	msg[5] = byte(pitch & 0xFF)
+
+	// Heading.
+	msg[6] = byte((hdg >> 8) & 0xFF)
+	msg[7] = byte(hdg & 0xFF)
+
+	// Indicated Airspeed.
+	msg[8] = byte((ias >> 8) & 0xFF)
+	msg[9] = byte(ias & 0xFF)
+
+	// True Airspeed.
+	msg[10] = byte((tas >> 8) & 0xFF)
+	msg[11] = byte(tas & 0xFF)
+
+	sendMsg(prepareMessage(msg), NETWORK_AHRS_GDL90, false)
+}
+
+/*
+	ffAttitudeSender()
+	 Send AHRS message in FF format every 200ms.
+*/
+
+func ffAttitudeSender() {
+	ticker := time.NewTicker(200 * time.Millisecond)
+	for {
+		<-ticker.C
+		makeFFAHRSMessage()
+	}
+}
+
 func makeAHRSGDL90Report() {
 	msg := make([]byte, 24)
 	msg[0] = 0x4c
@@ -1859,10 +1939,8 @@ func makeAHRSGDL90Report() {
 		if !isAHRSInvalidValue(mySituation.AHRSRoll) {
 			roll = roundToInt16(mySituation.AHRSRoll * 10)
 		}
-		if isAHRSInvalidValue(mySituation.AHRSGyroHeading) {
-			hdg = roundToInt16(mySituation.AHRSGyroHeading * 10) // TODO westphae: switch to AHRSMagHeading?
-		} else {
-			hdg = roundToInt16(float64(mySituation.GPSTrueCourse))
+		if !isAHRSInvalidValue(mySituation.AHRSGyroHeading) {
+			hdg = roundToInt16(mySituation.AHRSGyroHeading * 10)
 		}
 		if !isAHRSInvalidValue(mySituation.AHRSSlipSkid) {
 			slip_skid = roundToInt16(-mySituation.AHRSSlipSkid * 10)
@@ -2034,6 +2112,7 @@ func pollGPS() {
 	readyToInitGPS = true //TODO: Implement more robust method (channel control) to kill zombie serial readers
 	timer := time.NewTicker(4 * time.Second)
 	go gpsAttitudeSender()
+	go ffAttitudeSender()
 	for {
 		<-timer.C
 		// GPS enabled, was not connected previously?

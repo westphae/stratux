@@ -10,6 +10,7 @@
 package main
 
 import (
+	"archive/zip"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -21,13 +22,12 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"syscall"
 	"text/template"
 	"time"
-	"archive/zip"
-	"path/filepath"
 )
 
 type SettingMessage struct {
@@ -415,11 +415,13 @@ func handleSettingsSetRequest(w http.ResponseWriter, r *http.Request) {
 func handleShutdownRequest(w http.ResponseWriter, r *http.Request) {
 	syscall.Sync()
 	syscall.Reboot(syscall.LINUX_REBOOT_CMD_POWER_OFF)
+	gracefulShutdown()
 }
 
 func doReboot() {
 	syscall.Sync()
 	syscall.Reboot(syscall.LINUX_REBOOT_CMD_RESTART)
+	gracefulShutdown()
 }
 
 func handleDeleteLogFile(w http.ResponseWriter, r *http.Request) {
@@ -437,7 +439,7 @@ func handleDeleteAHRSLogFiles(w http.ResponseWriter, r *http.Request) {
 	var fn string
 	for _, f := range files {
 		fn = f.Name()
-		if v, _ := filepath.Match("sensors_*.csv", fn) ; v {
+		if v, _ := filepath.Match("sensors_*.csv", fn); v {
 			os.Remove("/var/log/" + fn)
 			log.Printf("Deleting AHRS log file %s\n", fn)
 		}
@@ -688,14 +690,12 @@ func defaultServer(w http.ResponseWriter, r *http.Request) {
 func handleroPartitionRebuild(w http.ResponseWriter, r *http.Request) {
 	out, err := exec.Command("/usr/sbin/rebuild_ro_part.sh").Output()
 
-	var ret_err error
 	if err != nil {
-		ret_err = fmt.Errorf("Rebuild RO Partition error: %s", err.Error())
+		addSingleSystemErrorf("partition-rebuild", "Rebuild RO Partition error: %s", err.Error())
 	} else {
-		ret_err = fmt.Errorf("Rebuild RO Partition success: %s", out)
+		addSingleSystemErrorf("partition-rebuild", "Rebuild RO Partition success: %s", out)
 	}
 
-	addSystemError(ret_err)
 }
 
 // https://gist.github.com/alexisrobert/982674.
