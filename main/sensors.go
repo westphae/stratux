@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"../goflying/ahrs"
-	"../goflying/ahrsweb"
 	"../sensors"
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/all"
@@ -25,7 +24,7 @@ var (
 	i2cbus           embd.I2CBus
 	myPressureReader sensors.PressureReader
 	myIMUReader      sensors.IMUReader
-	cal              chan (string)
+	cal              chan string
 	analysisLogger   *ahrs.AHRSLogger
 	ahrsCalibrating  bool
 	logMap           map[string]interface{}
@@ -134,7 +133,7 @@ func initIMU() (ok bool) {
 	return false
 }
 
-//FIXME: Shoud be moved to managementinterface.go and standardized on management interface port.
+//FIXME: Should be moved to managementinterface.go and standardized on management interface port.
 
 func sensorAttitudeSender() {
 	var (
@@ -146,20 +145,12 @@ func sensorAttitudeSender() {
 
 	s := ahrs.NewSimpleAHRS()
 	m := ahrs.NewMeasurement()
-	cal = make(chan (string), 1)
-
-	// Set up loggers for analysis
-	ahrswebListener, err := ahrsweb.NewKalmanListener()
-	if err != nil {
-		// addSingleSystemErrorf("ahrs-web-start", "AHRS Info: couldn't start ahrswebListener: %s\n", err.Error())
-	} else {
-		defer ahrswebListener.Close()
-	}
+	cal = make(chan string, 1)
 
 	// Need a sampling freq faster than 10Hz
 	timer := time.NewTicker(50 * time.Millisecond) // ~20Hz update.
 	for {
-		// Set sensor gyro calibrations
+		// Set gyro and accel calibrations
 		if c, d := &globalSettings.C, &globalSettings.D; d[0]*d[0]+d[1]*d[1]+d[2]*d[2] > 0 {
 			s.SetCalibrations(c, d)
 			log.Printf("AHRS Info: IMU Calibrations read from settings: accel %6f %6f %6f; gyro %6f %6f %6f\n",
@@ -312,14 +303,6 @@ func sensorAttitudeSender() {
 
 			makeAHRSGDL90Report() // Send whether or not valid - the function will invalidate the values as appropriate
 
-			// Send to AHRS debugging server.
-			if ahrswebListener != nil {
-				if err = ahrswebListener.Send(s.GetState(), m); err != nil {
-					log.Printf("AHRS Error: couldn't write to ahrsweb: %s\n", err)
-					ahrswebListener = nil
-				}
-			}
-
 			// Log it to csv for later analysis.
 			if globalSettings.AHRSLog && usage.Usage() < 0.95 {
 				if analysisLogger == nil {
@@ -357,7 +340,7 @@ func makeOrientationQuaternion(g [3]float64) (f *[4]float64) {
 	}
 
 	// This is the "forward direction" chosen during the orientation process.
-	var x *[3]float64 = new([3]float64)
+	var x = new([3]float64)
 	if globalSettings.IMUMapping[0] < 0 {
 		x[-globalSettings.IMUMapping[0]-1] = -1
 	} else {
