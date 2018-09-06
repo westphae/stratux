@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"../goflying/ahrs"
+	"../goflying/magnetometer"
 	"../sensors"
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/all"
@@ -141,10 +142,13 @@ func sensorAttitudeSender() {
 		roll, pitch, heading float64
 		mpuError, magError   error
 		failNum              uint8
+		k, l                 *[3]float64
+		kNorm, lNorm		 float64
 	)
 
 	s := ahrs.NewSimpleAHRS()
 	m := ahrs.NewMeasurement()
+	n := magkal.NewSimpleMagKal()
 	cal = make(chan string, 1)
 
 	// Need a sampling freq faster than 10Hz
@@ -152,7 +156,7 @@ func sensorAttitudeSender() {
 	for {
 		// Set gyro and accel calibrations
 		if c, d := &globalSettings.C, &globalSettings.D; d[0]*d[0]+d[1]*d[1]+d[2]*d[2] > 0 {
-			s.SetCalibrations(c, d)
+			s.SetCalibrations(c, d, nil, nil)
 			log.Printf("AHRS Info: IMU Calibrations read from settings: accel %6f %6f %6f; gyro %6f %6f %6f\n",
 				c[0], c[1], c[2], d[0], d[1], d[2])
 		} else {
@@ -162,6 +166,17 @@ func sensorAttitudeSender() {
 			default:
 			}
 		}
+
+		// Set magnetometer calibrations
+		k, l = &globalSettings.K, &globalSettings.L
+		if k[0]*k[0]+k[1]*k[1]+k[2]*k[2] == 0 {
+			k, l = &[3]float64{1,1,1}, &[3]float64{0,0,0}
+		} else {
+			log.Printf("AHRS Info: Mag Calibrations read from settings: scaling K %6f %6f %6f; zero bias L %6f %6f %6f\n",
+				k[0], k[1], k[2], l[0], l[1], l[2])
+			n.SetCalibrations(k, l)
+		}
+		s.SetCalibrations(nil, nil, k, l)
 
 		// Set sensor quaternion
 		if f := &globalSettings.SensorQuaternion; f[0]*f[0]+f[1]*f[1]+f[2]*f[2]+f[3]*f[3] > 0 {
@@ -201,12 +216,12 @@ func sensorAttitudeSender() {
 					} else {
 						if strings.Contains(action, "cal") { // Calibrate gyros
 							globalSettings.D = [3]float64{d1, d2, d3}
-							s.SetCalibrations(nil, &globalSettings.D)
+							s.SetCalibrations(nil, &globalSettings.D, nil, nil)
 							log.Printf("AHRS Info: IMU gyro calibration: %3f %3f %3f\n", d1, d2, d3)
 						}
 						if strings.Contains(action, "level") { // Calibrate accel / level
 							globalSettings.C = [3]float64{c1, c2, c3}
-							s.SetCalibrations(&globalSettings.C, nil)
+							s.SetCalibrations(&globalSettings.C, nil, nil, nil)
 							globalSettings.SensorQuaternion = *makeOrientationQuaternion(globalSettings.C)
 							s.SetSensorQuaternion(&globalSettings.SensorQuaternion)
 							s.Reset()
@@ -259,6 +274,16 @@ func sensorAttitudeSender() {
 				}
 			}
 
+			// Run the MagKal calculations.
+			n.Compute(m)
+			k, l = n.GetCalibrations()
+			kNorm, lNorm = magkal.NormDiff(&globalSettings.K, k), magkal.NormDiff(&globalSettings.L, l)
+			if  kNorm > 0.01 || lNorm > 0.5 {
+				globalSettings.K, globalSettings.L = *k, *l
+				saveSettings()
+			}
+			s.SetCalibrations(nil, nil, k, l)
+
 			// Run the AHRS calculations.
 			s.Compute(m)
 
@@ -274,7 +299,7 @@ func sensorAttitudeSender() {
 				}
 
 				//TODO westphae: until magnetometer calibration is performed, no mag heading
-				mySituation.AHRSMagHeading = ahrs.Invalid
+				mySituation.AHRSMagHeading = s.MagHeading()
 				mySituation.AHRSSlipSkid = s.SlipSkid()
 				mySituation.AHRSTurnRate = s.RateOfTurn()
 				mySituation.AHRSGLoad = s.GLoad()

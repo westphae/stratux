@@ -1111,6 +1111,7 @@ type settings struct {
 	IMUMapping           [2]int     // Map from aircraft axis to sensor axis: accelerometer
 	SensorQuaternion     [4]float64 // Quaternion mapping from sensor frame to aircraft frame
 	C, D                 [3]float64 // IMU Accel, Gyro zero bias
+	K, L                 [3]float64 // Magnetometer scaling, zero bias
 	PPM                  int
 	OwnshipModeS         string
 	WatchList            string
