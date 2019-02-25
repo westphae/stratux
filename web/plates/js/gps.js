@@ -195,6 +195,8 @@ function GPSCtrl($rootScope, $scope, $state, $http, $interval) {
             $scope.ahrs_heading_mag = situation.AHRSMagHeading.toFixed(0);
             if ($scope.ahrs_heading_mag > 360) {
                 $scope.ahrs_heading_mag = "---";
+            } else {
+                compass.update(situation.AHRSMagHeading)
             }
             $scope.ahrs_gload = situation.AHRSGLoad.toFixed(2);
             if ($scope.ahrs_gload > 360) {
@@ -391,18 +393,19 @@ function GPSCtrl($rootScope, $scope, $state, $http, $interval) {
         // Simple GET request example (note: response is asynchronous)
         $http.get(URL_SETTINGS_GET).
         then(function (response) {
-            settings = angular.fromJson(response.data);
+            let settings = angular.fromJson(response.data);
             if (settings.GLimits === "" || settings.GLimits === undefined) {
                 settings.GLimits = "-1.76 4.4";
             }
-            var glims = settings.GLimits.split(" ");
+            let glims = settings.GLimits.split(" ");
             $scope.gLimNegative = parseFloat(glims[0]);
             $scope.gLimPositive = parseFloat(glims[1]);
             gMeter = new GMeterRenderer("gMeter_display", $scope.gLimNegative, $scope.gLimPositive, $scope.GMeterReset);
+            compass = new CompassRenderer("compass_display");
         }, function (response) {});
     }
 
-    var gMeter;
+    let gMeter, compass;
     getAHRSSettings();
 
     // GPS Controller tasks

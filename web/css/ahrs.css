@@ -1,5 +1,7 @@
-/* Thanks to https://codepen.io/fskirschbaum/pen/MYJNaj for the indicator template */
-
+/*
+Attitude Indicator Lights
+* Thanks to https://codepen.io/fskirschbaum/pen/MYJNaj for the indicator template
+ */
 .indicator {
     margin: 0 1%;
     width: 18%;
@@ -52,7 +54,9 @@
     to { background-color: #F22; }
 }
 
-/* For g-meter */
+/*
+G-Meter
+*/
 .gMeter .reset {
     fill: #121512;
     stroke: #222522;
@@ -113,7 +117,9 @@
     text-anchor: start;
 }
 
-/* For attitude indicator */
+/*
+Attitude Indicator
+*/
 .ai .earth {
     fill: chocolate;
 }
@@ -156,6 +162,60 @@
     font-family: sans-serif;
     text-anchor: central;
     alignment-baseline: middle;
-    stroke-width: 0px;
+    stroke-width: 0;
     fill: red;
+}
+
+/*
+Compass
+*/
+.compass {
+    fill: #121512;
+    stroke: #121512;
+    stroke-width: 1px;
+}
+
+.compass .marks {
+    fill: #ddddee;
+    stroke: #eeeeff;
+    stroke-width: 1;
+}
+
+.compass .airplane {
+    fill: #ddddee;
+    stroke-width: 0;
+}
+
+.compass .text {
+    font-size: 2em; // 16px
+    font-family: sans-serif;
+    text-anchor: middle;
+    stroke-width: 0;
+    fill: #ddddee;
+    stroke: #ddddee;
+}
+
+.compass .big {
+    stroke-width: 3;
+}
+
+.compass .text .big {
+    font-size: 2em;
+}
+
+.compass .hdgBox {
+    stroke-width: 1;
+    stroke: magenta;
+}
+
+.compass .hdgBug {
+    fill: cyan;
+    stroke: cyan;
+    stroke-width: 0;
+}
+
+.compass .trackBug {
+    fill: cyan;
+    stroke: cyan;
+    stroke-width: 0;
 }
