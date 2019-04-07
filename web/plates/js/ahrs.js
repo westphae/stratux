@@ -1,3 +1,21 @@
+/* Take care of updating an angle with a smoothing constant such that
+   wrapping around 360 is taken care of. */
+function UpdateAngle(a0, a1, k) {
+    let da = a1-a0;
+    while (da < -180) { da += 360; }
+    while (da >= 180) { da -= 360; }
+    let out = a0 + (1-k)*da;
+    while (out < 0) { out += 360; }
+    while (out >= 360) { out -= 360; }
+    return out;
+}
+
+/* Compass should return 0, not 360 */
+function UpdateTextAngle(a) {
+    let out = a.toFixed();
+    return (out%360).toString();
+}
+
 function AHRSRenderer(locationId) {
 	this.width = -1;
 	this.height = -1;
@@ -277,7 +295,7 @@ function CompassRenderer(locationId) {
 
     // Add 10° marks between -30° and +30° to the background
     for (let i=-30; i<=30; i+=10) {
-        if (i%30 === 0) {
+        if (i%30 === 0 & i !== 0) {
             el.line(0, -176, 0, -195).addClass('big').rotate(i, 0, 0);
         } else if (i !== 0) {
             el.line(0, -176, 0, -190).addClass('big').rotate(i, 0, 0);
@@ -330,22 +348,35 @@ function CompassRenderer(locationId) {
                 .addClass('text')
                 .cx(145).cy(0)
                 .transform({ rotation: i-90, cx: 0, cy: 0, relative: true })
-                .transform({ rotation: -(i-90), relative: true });
+                .transform({ rotation: 90, relative: true });
+                //.transform({ rotation: -(i-90), relative: true });
         }
     }
 
     // Add a box to display the heading as text
-    let heading_box = compass.group().addClass('hdgBox');
-    heading_box.polygon('0,-165 5,-175 20,-175 20,-198 -20,-198 -20,-175 -5,-175');
-    this.hdgText = heading_box.text("0").x(0).addClass('text').translate(0,-196);
+    let heading_box = compass.group().addClass('heading');
+    heading_box.polygon('0,-165 5,-175 25,-175 25,-198 -25,-198 -25,-175 -5,-175').addClass('box');
+    this.hdgText = heading_box.text("0").addClass('text').translate(0,-196);
 
     // Add a heading bug
-    this.heading_bug = compass.group().addClass('hdgBug')
-        .polygon('0,-165 5,-175 18,-175 18,-163 -18,-163 -18,-175 -5,-175');
+    this.heading_bug = compass.group().addClass('bug')
+        .polygon('0,-165 5,-175 18,-175 18,-163 -18,-163 -18,-175 -5,-175')
+        .addClass('indicator');
+
+    // Add a box to display the bug as text
+    let bug_box = compass.group().addClass('bug');
+    bug_box.rect(50, 23).addClass('box').translate(130,-198);
+    this.bugText = bug_box.text("0").addClass('text').translate(155,-196);
+
+    // Add a box to display the track as text
+    let track_box = compass.group().addClass('track');
+    track_box.rect(50, 23).translate(-180,-198).addClass('box');
+    this.trkText = track_box.text("0").addClass('text').translate(-155,-196);
 
     // Make a little diamond for indicating the GPS track
-    this.track_el = compass.polygon('0,-162 4,-154 0,-146 -4,-154')
-        .addClass('trackBug');
+    this.track_el = compass.group().addClass('track')
+        .polygon('0,-162 4,-154 0,-146 -4,-154')
+        .addClass('indicator');
 
     // this.pointer_el = compass.group().addClass('g');
     // this.pointer_el.polygon('0,0 -170,0 -150,-10 0,-10').addClass('pointer');
@@ -368,13 +399,18 @@ CompassRenderer.prototype = {
     },
 
     update: function (heading, track, bug) {
-        this.heading = heading;
-        this.track = track;
-        this.bug = bug;
+        const tau = 0.2;
+        this.heading = UpdateAngle(this.heading, heading, tau);
+        this.track = UpdateAngle(this.track, track, tau);
+        if (bug !== null) {
+            this.bug = UpdateAngle(this.bug, bug, 0);
+        }
 
-        this.card.transform({ rotation: -heading, cx: 0, cy: 0, relative: true });
-        this.track_el.transform({ rotation: track-heading, cx: 0, cy: 0, relative: true });
-        this.hdgText.text(heading);
-        this.heading_bug.transform({ rotation: bug-heading, cx: 0, cy: 0, relative: true });
+        this.card.transform({ rotation: -this.heading, cx: 0, cy: 0 });
+        this.track_el.transform({ rotation: this.track-this.heading, cx: 0, cy: 0 });
+        this.hdgText.text(UpdateTextAngle(this.heading));
+        this.trkText.text(UpdateTextAngle(this.track));
+        this.heading_bug.transform({ rotation: this.bug-this.heading, cx: 0, cy: 0 });
+        this.bugText.text(this.bug.toFixed());
     }
 };

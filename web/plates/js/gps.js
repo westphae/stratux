@@ -196,7 +196,7 @@ function GPSCtrl($rootScope, $scope, $state, $http, $interval) {
             if ($scope.ahrs_heading_mag > 360) {
                 $scope.ahrs_heading_mag = "---";
             } else {
-                compass.update(situation.AHRSMagHeading)
+                compass.update(situation.AHRSMagHeading, situation.GPSTrueCourse, null) // TODO Need GPS Mag Course
             }
             $scope.ahrs_gload = situation.AHRSGLoad.toFixed(2);
             if ($scope.ahrs_gload > 360) {

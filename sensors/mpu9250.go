@@ -2,7 +2,7 @@
 package sensors
 
 import (
-	"../goflying/mpu9250"
+	"../goflying/mpu"
 )
 
 const (
@@ -14,28 +14,28 @@ const (
 // MPU9250 represents an InvenSense MPU9250 attached to the I2C bus and satisfies
 // the IMUReader interface.
 type MPU9250 struct {
-	mpu *mpu9250.MPU9250
+	mpu *mpu.MPU9250
 }
 
 // NewMPU9250 returns an instance of the MPU9250 IMUReader, connected to an
 // MPU9250 attached on the I2C bus with either valid address.
 func NewMPU9250() (*MPU9250, error) {
 	var (
-		m   MPU9250
-		mpu *mpu9250.MPU9250
-		err error
+		m    MPU9250
+		mmpu *mpu.MPU9250
+		err  error
 	)
 
-	mpu, err = mpu9250.NewMPU9250(gyroRange, accelRange, updateFreq, true, false)
+	mmpu, err = mpu.NewMPU9250(gyroRange, accelRange, updateFreq, true, false)
 	if err != nil {
 		return nil, err
 	}
 
 	// Set Gyro (Accel) LPFs to 20 (21) Hz to filter out prop/glareshield vibrations above 1200 (1260) RPM
-	mpu.SetGyroLPF(21)
-	mpu.SetAccelLPF(21)
+	mmpu.SetGyroLPF(21)
+	mmpu.SetAccelLPF(21)
 
-	m.mpu = mpu
+	m.mpu = mmpu
 	return &m, nil
 }
 
@@ -43,10 +43,10 @@ func NewMPU9250() (*MPU9250, error) {
 // error reading Gyro/Accel, and error reading Mag.
 func (m *MPU9250) Read() (T int64, G1, G2, G3, A1, A2, A3, M1, M2, M3 float64, GAError, MAGError error) {
 	var (
-		data *mpu9250.MPUData
+		data *mpu.MPUData
 		i    int8
 	)
-	data = new(mpu9250.MPUData)
+	data = new(mpu.MPUData)
 
 	for data.N == 0 && i < 5 {
 		data = <-m.mpu.CAvg
@@ -71,9 +71,9 @@ func (m *MPU9250) Read() (T int64, G1, G2, G3, A1, A2, A3, M1, M2, M3 float64, G
 // error reading Gyro/Accel, and error reading Mag.
 func (m *MPU9250) ReadOne() (T int64, G1, G2, G3, A1, A2, A3, M1, M2, M3 float64, GAError, MAGError error) {
 	var (
-		data *mpu9250.MPUData
+		data *mpu.MPUData
 	)
-	data = new(mpu9250.MPUData)
+	data = new(mpu.MPUData)
 
 	data = <-m.mpu.C
 	T = data.T.UnixNano()

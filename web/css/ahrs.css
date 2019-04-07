@@ -172,7 +172,7 @@ Compass
 .compass {
     fill: #121512;
     stroke: #121512;
-    stroke-width: 1px;
+    stroke-width: 1;
 }
 
 .compass .marks {
@@ -203,19 +203,26 @@ Compass
     font-size: 2em;
 }
 
-.compass .hdgBox {
-    stroke-width: 1;
+.compass .heading {
     stroke: magenta;
+    fill: magenta;
 }
 
-.compass .hdgBug {
-    fill: cyan;
+.compass .bug {
     stroke: cyan;
+    fill: cyan;
+}
+
+.compass .track {
+    stroke: yellow;
+    fill: yellow;
+}
+
+.compass .indicator {
     stroke-width: 0;
 }
 
-.compass .trackBug {
-    fill: cyan;
-    stroke: cyan;
-    stroke-width: 0;
+.compass .box {
+    stroke-width: 1;
+    fill: black;
 }

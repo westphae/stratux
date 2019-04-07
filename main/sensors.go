@@ -142,13 +142,15 @@ func sensorAttitudeSender() {
 		roll, pitch, heading float64
 		mpuError, magError   error
 		failNum              uint8
-		k, l                 *[3]float64
+		k, l                 [3]float64
 		kNorm, lNorm		 float64
+		cM                   chan ahrs.Measurement
+		cMagKal              chan magkal.MagKalState
+		n                    magkal.MagKalState
 	)
 
 	s := ahrs.NewSimpleAHRS()
 	m := ahrs.NewMeasurement()
-	n := magkal.NewSimpleMagKal()
 	cal = make(chan string, 1)
 
 	// Need a sampling freq faster than 10Hz
@@ -168,15 +170,13 @@ func sensorAttitudeSender() {
 		}
 
 		// Set magnetometer calibrations
-		k, l = &globalSettings.K, &globalSettings.L
-		if k[0]*k[0]+k[1]*k[1]+k[2]*k[2] == 0 {
-			k, l = &[3]float64{1,1,1}, &[3]float64{0,0,0}
-		} else {
-			log.Printf("AHRS Info: Mag Calibrations read from settings: scaling K %6f %6f %6f; zero bias L %6f %6f %6f\n",
+		k, l = globalSettings.K, globalSettings.L
+		if k[0]*k[0]+k[1]*k[1]+k[2]*k[2] > 0 {
+			log.Printf("MagKal Info: Mag Calibrations read from settings: scaling K %6f %6f %6f; zero bias L %6f %6f %6f\n",
 				k[0], k[1], k[2], l[0], l[1], l[2])
-			n.SetCalibrations(k, l)
 		}
-		s.SetCalibrations(nil, nil, k, l)
+		cM, cMagKal = magkal.NewMagKal(k, l, magkal.ComputeSimple)
+		s.SetCalibrations(nil, nil, &k, &l)
 
 		// Set sensor quaternion
 		if f := &globalSettings.SensorQuaternion; f[0]*f[0]+f[1]*f[1]+f[2]*f[2]+f[3]*f[3] > 0 {
@@ -275,14 +275,17 @@ func sensorAttitudeSender() {
 			}
 
 			// Run the MagKal calculations.
-			n.Compute(m)
-			k, l = n.GetCalibrations()
-			kNorm, lNorm = magkal.NormDiff(&globalSettings.K, k), magkal.NormDiff(&globalSettings.L, l)
+			cM<- *m
+			n = <-cMagKal
+			k = n.K
+			l = n.L
+
+			kNorm, lNorm = magkal.NormDiff(&globalSettings.K, &k), magkal.NormDiff(&globalSettings.L, &l)
 			if  kNorm > 0.01 || lNorm > 0.5 {
-				globalSettings.K, globalSettings.L = *k, *l
+				globalSettings.K, globalSettings.L = k, l
 				saveSettings()
 			}
-			s.SetCalibrations(nil, nil, k, l)
+			s.SetCalibrations(nil, nil, &k, &l)
 
 			// Run the AHRS calculations.
 			s.Compute(m)
@@ -298,7 +301,6 @@ func sensorAttitudeSender() {
 					mySituation.AHRSGyroHeading /= ahrs.Deg
 				}
 
-				//TODO westphae: until magnetometer calibration is performed, no mag heading
 				mySituation.AHRSMagHeading = s.MagHeading()
 				mySituation.AHRSSlipSkid = s.SlipSkid()
 				mySituation.AHRSTurnRate = s.RateOfTurn()
